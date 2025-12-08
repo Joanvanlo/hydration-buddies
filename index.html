@@ -12,7 +12,7 @@
       --text-main: #111827;
       --text-muted: #6b7280;
       --shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
-      --radius-lg: 18px;
+      --border-dashed: rgba(148, 163, 184, 0.5);
     }
 
     * {
@@ -29,19 +29,23 @@
       justify-content: center;
       background: radial-gradient(circle at top left, #e0f2fe, #f5f3ff 50%, #fee2e2);
       color: var(--text-main);
+      position: relative;
+      overflow-x: hidden;
     }
 
     .app {
+      position: relative;
       background: var(--card-bg);
       border-radius: 26px;
       padding: 24px 26px 22px;
-      width: 380px;
+      width: 400px;
       box-shadow: var(--shadow);
       border: 1px solid rgba(148, 163, 184, 0.18);
+      z-index: 1;
     }
 
     .app-header {
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .title {
@@ -68,10 +72,63 @@
       margin-bottom: 12px;
     }
 
+    /* Sound toggle row */
+    .sound-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    .sound-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .sound-toggle input {
+      display: none;
+    }
+
+    .sound-toggle-pill {
+      width: 32px;
+      height: 16px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      position: relative;
+      transition: background 0.15s ease;
+    }
+
+    .sound-toggle-knob {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #ffffff;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.3);
+      transition: transform 0.15s ease;
+    }
+
+    .sound-toggle input:checked + .sound-toggle-pill {
+      background: #4c6fff;
+    }
+
+    .sound-toggle input:checked + .sound-toggle-pill .sound-toggle-knob {
+      transform: translateX(14px);
+    }
+
+    .sound-toggle-label {
+      user-select: none;
+    }
+
     .user-tabs {
       display: flex;
       gap: 6px;
-      margin-bottom: 8px;
+      margin: 10px 0 16px;
     }
 
     .user-tab {
@@ -107,7 +164,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 6px;
+      margin: 12px 0 16px;
       font-size: 12px;
       color: var(--text-muted);
     }
@@ -132,59 +189,15 @@
       box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
     }
 
-    .progress-wrap {
-      margin-bottom: 12px;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 4px;
-      font-size: 12px;
-    }
-
-    .progress-text {
-      font-weight: 600;
-    }
-
-    .progress-percent {
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .trophy {
-      font-size: 14px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 9px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-inner {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #60a5fa, #4c6fff);
-      transition: width 0.25s ease-out;
-    }
-
+    /* 3 rows x 5 columns = 15 glasses */
     .glasses-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0 16px;
-      gap: 6px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin: 6px 0 18px;
     }
 
     .glass-btn {
-      flex: 1 1 calc(100% / 6 - 4px);
       border: none;
       background: #f3f4ff;
       border-radius: 999px;
@@ -201,49 +214,15 @@
       box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
     }
 
-    .glass-btn:active {
-      transform: translateY(1px) scale(0.97);
-      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+    /* glass pop / slide animation */
+    .glass-btn.pop {
+      animation: glassPop 0.25s ease-out;
     }
 
-    .controls {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .btn {
-      flex: 1;
-      border-radius: 999px;
-      border: none;
-      padding: 7px 0;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.08s ease-out, box-shadow 0.12s ease-out,
-        background 0.12s ease-out;
-    }
-
-    .btn-main {
-      background: #4c6fff;
-      color: white;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
-    }
-
-    .btn-main:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 2px 7px rgba(37, 99, 235, 0.35);
-    }
-
-    .btn-ghost {
-      background: #eef2ff;
-      color: #1e293b;
-      box-shadow: 0 2px 6px rgba(148, 163, 184, 0.3);
-    }
-
-    .btn-ghost:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 1px 4px rgba(148, 163, 184, 0.25);
+    @keyframes glassPop {
+      0% { transform: translateY(3px) scale(0.9); }
+      60% { transform: translateY(-2px) scale(1.12); }
+      100% { transform: translateY(0) scale(1); }
     }
 
     .office-note {
@@ -252,8 +231,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 4px;
-      margin-bottom: 4px;
+      margin-top: 14px;
     }
 
     .pill {
@@ -265,37 +243,81 @@
       border: 1px solid #bae6fd;
     }
 
+    .time-left {
+      margin-top: 6px;
+      margin-bottom: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
     .meters-card {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px dashed rgba(148, 163, 184, 0.5);
+      margin-top: 18px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-dashed);
       font-size: 12px;
     }
 
     .meters-title {
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 10px;
     }
 
-    .meter-row {
+    /* Person cards */
+    .person-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .person-inner {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .person-left {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .person-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-left: 10px;
+      border-left: 1px dashed var(--border-dashed);
+    }
+
+    .person-toprow {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin: 3px 0;
+      justify-content: flex-start;
+      gap: 6px;
     }
 
     .meter-name {
-      width: 70px;
-      font-weight: 500;
-      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 4px;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .meter-name span.emoji {
+      font-size: 16px;
     }
 
     .meter-bar {
-      flex: 1;
-      height: 6px;
+      width: 100%;
+      height: 7px;
       border-radius: 999px;
       background: #e5e7eb;
       overflow: hidden;
@@ -306,18 +328,87 @@
       height: 100%;
       background: linear-gradient(90deg, #a5b4fc, #4c6fff);
       width: 0%;
-      transition: width 0.25s ease-out;
+      transition: width 0.25s ease-out, background 0.2s ease-out;
     }
 
     .meter-text {
-      width: 70px;
-      text-align: right;
-      color: var(--text-muted);
+      margin-top: 3px;
       font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .meter-message {
+      margin-top: 1px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .streak-main {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
       gap: 4px;
+      margin-bottom: 2px;
+    }
+
+    .streak-number {
+      font-size: 18px;
+      line-height: 1.1;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .streak-fire {
+      font-size: 16px;
+      line-height: 1.1;
+    }
+
+    .streak-label {
+      font-size: 10px;
+      text-transform: lowercase;
+      color: var(--text-muted);
+    }
+
+    /* Confetti */
+    .confetti-piece {
+      position: fixed;
+      font-size: 18px;
+      animation: confettiFall 1.2s ease-out forwards;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(260px) rotate(30deg);
+      }
+    }
+
+    /* Falling droplet into glass */
+    .glass-drop {
+      position: absolute;
+      font-size: 18px;
+      pointer-events: none;
+      animation: dropIntoGlass 0.38s ease-out forwards;
+      z-index: 5;
+    }
+
+    @keyframes dropIntoGlass {
+      0% {
+        transform: translateY(-14px);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(6px);
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -331,47 +422,38 @@
       <div class="date" id="date"></div>
     </header>
 
-    <p class="sub">Choose who you’re tracking, then tap to log their glasses.</p>
+    <p class="sub">Pick who you’re logging for, then tap glasses to update their day.</p>
+
+    <div class="sound-row">
+      <label class="sound-toggle">
+        <input type="checkbox" id="sound-toggle-input" />
+        <span class="sound-toggle-pill">
+          <span class="sound-toggle-knob"></span>
+        </span>
+        <span class="sound-toggle-label">Sound effects</span>
+      </label>
+    </div>
 
     <div class="user-tabs" id="user-tabs"></div>
 
     <div class="goal-row">
-      <span class="label">Daily goal</span>
+      <span class="label">Daily goal for this person</span>
       <span>
-        <input id="goal-input" class="goal-input" type="number" min="1" max="12" />
+        <input id="goal-input" class="goal-input" type="number" min="1" max="15" />
         <span style="font-size:11px;color:var(--text-muted);">glasses</span>
       </span>
     </div>
 
-    <div class="progress-wrap">
-      <div class="progress-header">
-        <span class="progress-text" id="progress-text"></span>
-        <span class="progress-percent" id="progress-percent">
-          <span id="percent-label"></span>
-          <span id="trophy-main" class="trophy" style="display:none;">🏆</span>
-        </span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-inner" id="progress-inner"></div>
-      </div>
-    </div>
-
-    <div class="glasses-row" id="glasses-row">
-      <!-- glasses injected by JS -->
-    </div>
-
-    <div class="controls">
-      <button class="btn btn-main" id="add-btn">Add a glass</button>
-      <button class="btn btn-ghost" id="undo-btn">Undo</button>
-    </div>
+    <div class="glasses-row" id="glasses-row"></div>
 
     <div class="office-note">
-      <span>Office hours: 09:00–17:00</span>
+      <span>Office hours: 09:00–17:30</span>
       <span class="pill" id="status-pill">Today</span>
     </div>
+    <div class="time-left" id="time-left"></div>
 
     <div class="meters-card">
-      <div class="meters-title">Today’s meter</div>
+      <div class="meters-title">Water meter 💧</div>
       <div id="meters-list"></div>
     </div>
   </div>
@@ -385,11 +467,10 @@
       setDoc,
       collection,
       query,
-      where,
       onSnapshot,
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 🔐 Your Firebase config (keep what you already pasted earlier)
+    // 🔐 Your Firebase config - paste your real values here
     const firebaseConfig = {
   apiKey: "AIzaSyAh3Wqa8NSzdWIXRNBJ6TqYHgNm8y7faI",
   authDomain: "hydration-buddies-5fa86.firebaseapp.com",
@@ -400,43 +481,37 @@
   measurementId: "G-FVEE8GDG13"
 };
 
-
-    // Initialise Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Shared group id
     const GROUP_ID = "hydration-besties";
 
-    // Three fixed users
     const USERS = [
-      { id: "joan", name: "Joan", emoji: "🪻" },
-      { id: "loes", name: "Loes", emoji: "🌷" },
-      { id: "john", name: "John", emoji: "🪴" },
+      { id: "joan", name: "Joan", emoji: "🧝‍♀️" },
+      { id: "loes", name: "Loes", emoji: "🐱" },
+      { id: "john", name: "John", emoji: "💪" },
     ];
 
-    const MAX_GLASSES = 12;
-    const OFFICE_START = 9;
-    const OFFICE_END = 17;
+    const MAX_GLASSES = 15;
+    const OFFICE_START_H = 9;
+    const OFFICE_START_M = 0;
+    const OFFICE_END_H = 17;
+    const OFFICE_END_M = 30;
 
-    const STORAGE_PREFIX = "waterTracker_v2_";
+    const STORAGE_PREFIX = "waterTracker_v10_";
 
     const today = new Date();
-    const todayKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
+    const todayKey = today.toISOString().slice(0, 10);
 
-    // Elements
     const dateEl = document.getElementById("date");
     const userTabsEl = document.getElementById("user-tabs");
     const goalInputEl = document.getElementById("goal-input");
-    const progressTextEl = document.getElementById("progress-text");
-    const percentLabelEl = document.getElementById("percent-label");
-    const trophyMainEl = document.getElementById("trophy-main");
-    const progressInnerEl = document.getElementById("progress-inner");
     const glassesRowEl = document.getElementById("glasses-row");
-    const addBtn = document.getElementById("add-btn");
-    const undoBtn = document.getElementById("undo-btn");
     const statusPill = document.getElementById("status-pill");
+    const timeLeftEl = document.getElementById("time-left");
     const metersListEl = document.getElementById("meters-list");
+    const soundToggleInput = document.getElementById("sound-toggle-input");
+    const appEl = document.querySelector(".app");
 
     function formatDatePretty(d) {
       return d.toLocaleDateString(undefined, {
@@ -459,19 +534,106 @@
       return `${STORAGE_PREFIX}selectedUser`;
     }
 
+    function storageKeySounds() {
+      return `${STORAGE_PREFIX}sounds`;
+    }
+
     function clamp(val, min, max) {
       return Math.min(max, Math.max(min, val));
     }
 
-    // Local state
+    function dateKeyForOffset(offsetDays) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function getEncouragement(count, goal) {
+      if (count <= 0) return "Let’s get that first glass 👀";
+      if (count < goal / 2) return "Nice start, keep sipping 💧";
+      if (count < goal) return "So close to your goal!";
+      return "Goal reached, hydration hero 💪";
+    }
+
+    // Audio
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        const Ctor = window.AudioContext || window.webkitAudioContext;
+        if (!Ctor) return null;
+        audioCtx = new Ctor();
+      }
+      return audioCtx;
+    }
+
+    let soundsEnabled =
+      localStorage.getItem(storageKeySounds()) !== "off";
+
+    soundToggleInput.checked = soundsEnabled;
+    soundToggleInput.addEventListener("change", () => {
+      soundsEnabled = soundToggleInput.checked;
+      localStorage.setItem(
+        storageKeySounds(),
+        soundsEnabled ? "on" : "off"
+      );
+    });
+
+    function playTone(freq, duration) {
+      if (!soundsEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const now = ctx.currentTime;
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      osc.start(now);
+      osc.stop(now + duration);
+    }
+
+    function playClickSound() {
+      playTone(900, 0.13);
+    }
+
+    function playGoalSound() {
+      playTone(600, 0.25);
+    }
+
+    // Confetti – more pieces, across the page
+    function launchConfetti() {
+      for (let i = 0; i < 40; i++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.textContent = Math.random() < 0.5 ? "💧" : "🎉";
+
+        const left = Math.random() * 100; // 0–100vw
+        const top = 5 + Math.random() * 20; // 5–25vh
+
+        piece.style.left = left + "vw";
+        piece.style.top = top + "vh";
+
+        document.body.appendChild(piece);
+        setTimeout(() => {
+          piece.remove();
+        }, 1200);
+      }
+    }
+
+    // State
     let selectedUserId =
       localStorage.getItem(storageKeySelectedUser()) || USERS[0].id;
 
     const counts = {};
     const goals = {};
+    const history = {};
+    const lastSuccess = {};
 
-    // Init counts and goals from localStorage
     for (const u of USERS) {
+      history[u.id] = {};
       const rawCount = Number(localStorage.getItem(storageKeyCount(u.id)));
       counts[u.id] =
         Number.isFinite(rawCount) && rawCount >= 0 ? rawCount : 0;
@@ -480,21 +642,41 @@
       goals[u.id] =
         Number.isFinite(rawGoal) && rawGoal >= 1 && rawGoal <= MAX_GLASSES
           ? rawGoal
-          : 8; // default goal
+          : 8;
+
+      // Start from whether they already meet their goal today
+      lastSuccess[u.id] = counts[u.id] >= goals[u.id];
     }
 
-    function updateStatusPill() {
-      const hour = new Date().getHours();
-      if (hour >= OFFICE_START && hour < OFFICE_END) {
+    function updateStatusAndTimeLeft() {
+      const now = new Date();
+      const minutes = now.getHours() * 60 + now.getMinutes();
+      const startMinutes = OFFICE_START_H * 60 + OFFICE_START_M;
+      const endMinutes = OFFICE_END_H * 60 + OFFICE_END_M;
+
+      if (minutes >= startMinutes && minutes < endMinutes) {
         statusPill.textContent = "In office hours";
         statusPill.style.background = "#ecfeff";
         statusPill.style.color = "#0369a1";
         statusPill.style.borderColor = "#bae6fd";
+
+        const remaining = endMinutes - minutes;
+        const h = Math.floor(remaining / 60);
+        const m = remaining % 60;
+        const labelHours = h > 0 ? `${h}h` : "";
+        const labelMinutes = m > 0 ? `${m}m` : h === 0 ? "0m" : "";
+        const name =
+          USERS.find((u) => u.id === selectedUserId)?.name || "you";
+        timeLeftEl.textContent = `${labelHours}${
+          labelHours && labelMinutes ? " " : ""
+        }${labelMinutes} left to reach ${name}'s goal today`;
       } else {
         statusPill.textContent = "Outside office hours";
         statusPill.style.background = "#fef3c7";
         statusPill.style.color = "#92400e";
         statusPill.style.borderColor = "#fed7aa";
+        timeLeftEl.textContent =
+          "Goal time is over for today. New streak starts tomorrow ✨";
       }
     }
 
@@ -518,24 +700,97 @@
     }
 
     function renderGlasses() {
-      const count = counts[selectedUserId] || 0;
-      glassesRowEl.innerHTML = "";
-      for (let i = 1; i <= MAX_GLASSES; i++) {
-        const btn = document.createElement("button");
-        btn.className = "glass-btn";
-        btn.textContent = i <= count ? "💧" : "🥛";
-        if (i <= count) btn.classList.add("filled");
-        btn.addEventListener("click", () => {
-          counts[selectedUserId] = i;
-          localStorage.setItem(
-            storageKeyCount(selectedUserId),
-            String(i)
-          );
-          updateView();
-          saveToCloud(selectedUserId).catch(console.error);
-        });
-        glassesRowEl.appendChild(btn);
+  const count = counts[selectedUserId] || 0;
+  glassesRowEl.innerHTML = "";
+  for (let i = 1; i <= MAX_GLASSES; i++) {
+    const btn = document.createElement("button");
+    btn.className = "glass-btn";
+    btn.textContent = i <= count ? "💧" : "🥛";
+    if (i <= count) btn.classList.add("filled");
+
+    btn.addEventListener("click", () => {
+      const current = counts[selectedUserId] || 0;
+
+      // 1️⃣ UNFILL: clicking the last filled glass -> just step back, no drop
+      if (i === current) {
+        const next = clamp(current - 1, 0, MAX_GLASSES);
+        counts[selectedUserId] = next;
+        localStorage.setItem(
+          storageKeyCount(selectedUserId),
+          String(next)
+        );
+        playClickSound();
+        updateView();
+        saveToCloud(selectedUserId).catch(console.error);
+        return;
       }
+
+      // 2️⃣ FILL: going up to this glass -> drop first, then fill
+      const next = i;
+
+      // get position of this glass BEFORE any re-render
+      const rect = btn.getBoundingClientRect();
+      const appRect = appEl.getBoundingClientRect();
+
+      // create falling droplet above this glass
+      const drop = document.createElement("span");
+      drop.className = "glass-drop";
+      drop.textContent = "💧";
+      drop.style.left =
+        rect.left - appRect.left + rect.width / 2 - 9 + "px";
+      drop.style.top =
+        rect.top - appRect.top - 6 + "px";
+      appEl.appendChild(drop);
+      setTimeout(() => drop.remove(), 400);
+
+      // after a short delay, actually update state + UI
+      setTimeout(() => {
+        counts[selectedUserId] = next;
+        localStorage.setItem(
+          storageKeyCount(selectedUserId),
+          String(next)
+        );
+
+        playClickSound();
+        updateView();
+
+        // pop the *new* glass element after re-render
+        const newBtn = glassesRowEl.children[i - 1];
+        if (newBtn) {
+          newBtn.classList.add("pop");
+          setTimeout(() => newBtn.classList.remove("pop"), 250);
+        }
+
+        saveToCloud(selectedUserId).catch(console.error);
+      }, 150);
+    });
+
+    glassesRowEl.appendChild(btn);
+  }
+}
+
+
+    function didMeetGoal(userId, dateKey) {
+      const day = history[userId]?.[dateKey];
+      if (!day) return false;
+      const goal = day.goal || 0;
+      const count = day.glasses_count || 0;
+      return goal > 0 && count >= goal;
+    }
+
+    function computeStreak(userId) {
+      let streak = 0;
+      for (let offset = 0; offset < 30; offset++) {
+        const key = dateKeyForOffset(-offset);
+        const day = history[userId]?.[key];
+        if (!day) break;
+        if (didMeetGoal(userId, key)) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      return streak;
     }
 
     function renderMeters() {
@@ -543,49 +798,102 @@
       for (const u of USERS) {
         const count = counts[u.id] || 0;
         const goal = goals[u.id] || 8;
-        const pct = clamp((count / MAX_GLASSES) * 100, 0, 100);
-        const row = document.createElement("div");
-        row.className = "meter-row";
+        const ratio = goal > 0 ? count / goal : 0;
+        const pct = clamp(ratio * 100, 0, 100);
+        const success = goal > 0 && count >= goal;
+        const streak = computeStreak(u.id);
+
+        const card = document.createElement("div");
+        card.className = "person-card";
+        card.title = `${u.name}: ${count}/${goal} glasses · ${streak}-day streak`;
+
+        const inner = document.createElement("div");
+        inner.className = "person-inner";
+
+        const left = document.createElement("div");
+        left.className = "person-left";
+
+        const topRow = document.createElement("div");
+        topRow.className = "person-toprow";
 
         const nameEl = document.createElement("div");
         nameEl.className = "meter-name";
-        nameEl.innerHTML = `<span>${u.emoji}</span><span>${u.name}</span>`;
+        nameEl.innerHTML = `<span class="emoji">${u.emoji}</span><span>${u.name}</span>`;
+
+        topRow.appendChild(nameEl);
 
         const bar = document.createElement("div");
         bar.className = "meter-bar";
-        const inner = document.createElement("div");
-        inner.className = "meter-inner";
-        inner.style.width = pct + "%";
-        bar.appendChild(inner);
+        const innerBar = document.createElement("div");
+        innerBar.className = "meter-inner";
+        innerBar.style.width = pct + "%";
+        innerBar.style.background = success
+          ? "linear-gradient(90deg,#22c55e,#16a34a)"
+          : "linear-gradient(90deg,#a5b4fc,#4c6fff)";
+        bar.appendChild(innerBar);
 
         const text = document.createElement("div");
         text.className = "meter-text";
-        const trophy =
-          count >= goal ? "🏆" : "";
-        text.innerHTML = `${count}/${goal} ${trophy}`;
+        text.textContent = `${count}/${goal} glasses`;
 
-        row.appendChild(nameEl);
-        row.appendChild(bar);
-        row.appendChild(text);
-        metersListEl.appendChild(row);
+        const msg = document.createElement("div");
+        msg.className = "meter-message";
+        msg.textContent = getEncouragement(count, goal);
+
+        left.appendChild(topRow);
+        left.appendChild(bar);
+        left.appendChild(text);
+        left.appendChild(msg);
+
+        const right = document.createElement("div");
+        right.className = "person-right";
+
+        const streakMain = document.createElement("div");
+        streakMain.className = "streak-main";
+        const num = document.createElement("div");
+        num.className = "streak-number";
+        num.textContent = streak;
+        const fire = document.createElement("div");
+        fire.className = "streak-fire";
+        fire.textContent = "🔥";
+        streakMain.appendChild(num);
+        streakMain.appendChild(fire);
+
+        const label = document.createElement("div");
+        label.className = "streak-label";
+        label.textContent = "day streak";
+
+        right.appendChild(streakMain);
+        right.appendChild(label);
+
+        inner.appendChild(left);
+        inner.appendChild(right);
+        card.appendChild(inner);
+        metersListEl.appendChild(card);
       }
     }
 
+    function checkGoalCelebration() {
+      const userId = selectedUserId;
+      const count = counts[userId] || 0;
+      const goal = goals[userId] || 8;
+      const success = goal > 0 && count >= goal;
+
+      if (!lastSuccess[userId] && success) {
+        launchConfetti();
+        playGoalSound();
+      }
+
+      lastSuccess[userId] = success;
+    }
+
     function updateView() {
-      const count = counts[selectedUserId] || 0;
       const goal = goals[selectedUserId] || 8;
-      const pctGoal = clamp((count / goal) * 100, 0, 999);
-      const pctMax = clamp((count / MAX_GLASSES) * 100, 0, 100);
-
       goalInputEl.value = goal;
-      progressTextEl.textContent = `${count} / ${goal} glasses`;
-      percentLabelEl.textContent = Math.round(pctGoal) + "% of goal";
-      progressInnerEl.style.width = pctMax + "%";
-
-      trophyMainEl.style.display = count >= goal ? "inline" : "none";
-
       renderGlasses();
       renderMeters();
+      checkGoalCelebration();
+      updateStatusAndTimeLeft();
     }
 
     async function saveToCloud(userId) {
@@ -614,55 +922,48 @@
 
     function startFriendsListener() {
       const entriesCol = collection(db, "groups", GROUP_ID, "entries");
-      const q = query(entriesCol, where("date", "==", todayKey));
-      onSnapshot(q, (snapshot) => {
+      const qAll = query(entriesCol);
+      onSnapshot(qAll, (snapshot) => {
+        for (const u of USERS) {
+          history[u.id] = history[u.id] || {};
+        }
+
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
           const userId = data.user_id;
-          if (!userId) return;
+          const dateKey = data.date;
+          if (!userId || !dateKey) return;
+          if (!history[userId]) history[userId] = {};
+          const day = history[userId][dateKey] || {};
           if (typeof data.glasses_count === "number") {
-            counts[userId] = clamp(data.glasses_count, 0, MAX_GLASSES);
-            localStorage.setItem(
-              storageKeyCount(userId),
-              String(counts[userId])
-            );
+            day.glasses_count = clamp(data.glasses_count, 0, MAX_GLASSES);
           }
           if (typeof data.goal === "number") {
-            goals[userId] = clamp(data.goal, 1, MAX_GLASSES);
-            localStorage.setItem(
-              storageKeyGoal(userId),
-              String(goals[userId])
-            );
+            day.goal = clamp(data.goal, 1, MAX_GLASSES);
+          }
+          history[userId][dateKey] = day;
+
+          if (dateKey === todayKey) {
+            if (typeof day.glasses_count === "number") {
+              counts[userId] = day.glasses_count;
+              localStorage.setItem(
+                storageKeyCount(userId),
+                String(day.glasses_count)
+              );
+            }
+            if (typeof day.goal === "number") {
+              goals[userId] = day.goal;
+              localStorage.setItem(
+                storageKeyGoal(userId),
+                String(day.goal)
+              );
+            }
           }
         });
+
         updateView();
       });
     }
-
-    // Events
-    addBtn.addEventListener("click", () => {
-      const current = counts[selectedUserId] || 0;
-      if (current >= MAX_GLASSES) return;
-      counts[selectedUserId] = current + 1;
-      localStorage.setItem(
-        storageKeyCount(selectedUserId),
-        String(counts[selectedUserId])
-      );
-      updateView();
-      saveToCloud(selectedUserId).catch(console.error);
-    });
-
-    undoBtn.addEventListener("click", () => {
-      const current = counts[selectedUserId] || 0;
-      if (current <= 0) return;
-      counts[selectedUserId] = current - 1;
-      localStorage.setItem(
-        storageKeyCount(selectedUserId),
-        String(counts[selectedUserId])
-      );
-      updateView();
-      saveToCloud(selectedUserId).catch(console.error);
-    });
 
     goalInputEl.addEventListener("change", () => {
       let val = Number(goalInputEl.value);
@@ -677,13 +978,11 @@
       saveToCloud(selectedUserId).catch(console.error);
     });
 
-    // Initial render
     dateEl.textContent = formatDatePretty(today);
-    updateStatusPill();
-    setInterval(updateStatusPill, 10 * 60 * 1000);
-
     renderUserTabs();
     updateView();
+    updateStatusAndTimeLeft();
+    setInterval(updateStatusAndTimeLeft, 60 * 1000);
     startFriendsListener();
   </script>
 </body>

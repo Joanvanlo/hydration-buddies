@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Water Check-in 💧</title>
+  <style>
+    :root {
+      --bg: #f5f3ff;
+      --card-bg: #ffffff;
+      --accent: #4c6fff;
+      --accent-soft: #c7d2ff;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
+      --radius-lg: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top left, #e0f2fe, #f5f3ff 50%, #fee2e2);
+      color: var(--text-main);
+    }
+
+    .app {
+      background: var(--card-bg);
+      border-radius: 26px;
+      padding: 24px 26px 22px;
+      width: 360px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .app-header {
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .title-emoji {
+      font-size: 22px;
+    }
+
+    .date {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .goal-line {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .progress-wrap {
+      margin-bottom: 12px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .progress-text {
+      font-weight: 600;
+    }
+
+    .progress-percent {
+      color: var(--text-muted);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 9px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .progress-inner {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #60a5fa, #4c6fff);
+      transition: width 0.25s ease-out;
+    }
+
+    .glasses-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0 16px;
+      gap: 6px;
+    }
+
+    .glass-btn {
+      flex: 1;
+      border: none;
+      background: #f3f4ff;
+      border-radius: 999px;
+      padding: 6px 0 5px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out,
+        background 0.15s ease-out;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+    }
+
+    .glass-btn.filled {
+      background: #dbeafe;
+      box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+    }
+
+    .glass-btn:active {
+      transform: translateY(1px) scale(0.97);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      border-radius: 999px;
+      border: none;
+      padding: 7px 0;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.08s ease-out, box-shadow 0.12s ease-out,
+        background 0.12s ease-out;
+    }
+
+    .btn-main {
+      background: #4c6fff;
+      color: white;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-main:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 2px 7px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-ghost {
+      background: #eef2ff;
+      color: #1e293b;
+      box-shadow: 0 2px 6px rgba(148, 163, 184, 0.3);
+    }
+
+    .btn-ghost:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 1px 4px rgba(148, 163, 184, 0.25);
+    }
+
+    .office-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .pill {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #ecfeff;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 0 4px;
+    }
+
+    .name-row label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .name-input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      padding: 5px 10px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .name-input:focus {
+      border-color: #4c6fff;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
+    }
+
+    .friends-card {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.5);
+      font-size: 12px;
+    }
+
+    .friends-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .friends-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 90px;
+      overflow-y: auto;
+    }
+
+    .friends-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 0;
+      color: var(--text-muted);
+    }
+
+    .friends-list span.name {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .friends-empty {
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="title">
+        <span class="title-emoji">💧</span>
+        <span>Water check-in</span>
+      </div>
+      <div class="date" id="date"></div>
+    </header>
+
+    <p class="sub">5 glasses during office hours. Tiny habit, big energy.</p>
+
+    <div class="name-row">
+      <label for="name-input">Your name</label>
+      <input id="name-input" class="name-input" placeholder="Joan" />
+    </div>
+
+    <div class="goal-line">Today's goal: <strong>5 glasses</strong></div>
+
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-text" id="progress-text"></span>
+        <span class="progress-percent" id="progress-percent"></span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-inner" id="progress-inner"></div>
+      </div>
+    </div>
+
+    <div class="glasses-row" id="glasses-row">
+      <!-- glasses injected by JS -->
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-main" id="add-btn">Add a glass</button>
+      <button class="btn btn-ghost" id="undo-btn">Undo</button>
+    </div>
+
+    <div class="office-note">
+      <span>Office hours: 09:00–17:00</span>
+      <span class="pill" id="status-pill">Today</span>
+    </div>
+
+    <div class="friends-card">
+      <div class="friends-title">Today’s crew</div>
+      <ul class="friends-list" id="friends-list"></ul>
+      <div class="friends-empty" id="friends-empty">
+        Share this page with your 2 buddies and you’ll see their progress here.
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + app logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      collection,
+      query,
+      where,
+      onSnapshot,
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // 1️⃣ PASTE YOUR FIREBASE CONFIG HERE
+    // Replace the object below with the firebaseConfig from your Firebase console.
+    const firebaseConfig = {
+  apiKey: "AIzaSyAh3Wqa8NSzdWIXRNBJ6TqYHgNm8y7faI",
+  authDomain: "hydration-buddies-5fa86.firebaseapp.com",
+  projectId: "hydration-buddies-5fa86",
+  storageBucket: "hydration-buddies-5fa86.appspot.com",
+  messagingSenderId: "23662841356",
+  appId: "1:23662841356:web:41c2195ab1acb139439329",
+  measurementId: "G-FVEE8GDG13"
+};
+
+    // 2️⃣ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 3️⃣ Simple shared group id for you & your friends
+    // Everyone using this app will share this data bucket.
+    const GROUP_ID = "hydration-besties";
+
+    const DAILY_GOAL = 5;
+    const OFFICE_START = 9;
+    const OFFICE_END = 17;
+    const STORAGE_KEY_NAME = "waterTracker_name";
+    const STORAGE_KEY_COUNT_PREFIX = "waterTracker_count_";
+
+    const today = new Date();
+    const todayKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    const dateEl = document.getElementById("date");
+    const progressTextEl = document.getElementById("progress-text");
+    const progressPercentEl = document.getElementById("progress-percent");
+    const progressInnerEl = document.getElementById("progress-inner");
+    const glassesRowEl = document.getElementById("glasses-row");
+    const addBtn = document.getElementById("add-btn");
+    const undoBtn = document.getElementById("undo-btn");
+    const statusPill = document.getElementById("status-pill");
+    const nameInput = document.getElementById("name-input");
+    const friendsListEl = document.getElementById("friends-list");
+    const friendsEmptyEl = document.getElementById("friends-empty");
+
+    function formatDatePretty(d) {
+      return d.toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
+    }
+
+    function getStoredName() {
+      return localStorage.getItem(STORAGE_KEY_NAME) ?? "";
+    }
+
+    function storeName(name) {
+      localStorage.setItem(STORAGE_KEY_NAME, name);
+    }
+
+    function countKey() {
+      return STORAGE_KEY_COUNT_PREFIX + todayKey;
+    }
+
+    function getStoredCount() {
+      const raw = localStorage.getItem(countKey());
+      const n = Number(raw);
+      if (Number.isFinite(n) && n >= 0 && n <= DAILY_GOAL) return n;
+      return 0;
+    }
+
+    function storeCountLocal(count) {
+      localStorage.setItem(countKey(), String(count));
+    }
+
+    let count = getStoredCount();
+
+    function updateStatusPill() {
+      const hour = new Date().getHours();
+      if (hour >= OFFICE_START && hour < OFFICE_END) {
+        statusPill.textContent = "In office hours";
+        statusPill.style.background = "#ecfeff";
+        statusPill.style.color = "#0369a1";
+        statusPill.style.borderColor = "#bae6fd";
+      } else {
+        statusPill.textContent = "Outside office hours";
+        statusPill.style.background = "#fef3c7";
+        statusPill.style.color = "#92400e";
+        statusPill.style.borderColor = "#fed7aa";
+      }
+    }
+
+    function renderGlasses() {
+      glassesRowEl.innerHTML = "";
+      for (let i = 1; i <= DAILY_GOAL; i++) {
+        const btn = document.createElement("button");
+        btn.className = "glass-btn";
+        btn.textContent = i <= count ? "💧" : "🥛";
+        if (i <= count) btn.classList.add("filled");
+        btn.addEventListener("click", () => {
+          count = i;
+          storeCountLocal(count);
+          updateView();
+          saveToCloud().catch(console.error);
+        });
+        glassesRowEl.appendChild(btn);
+      }
+    }
+
+    function updateView() {
+      progressTextEl.textContent = `${count} / ${DAILY_GOAL} glasses`;
+      const pct = Math.round((count / DAILY_GOAL) * 100);
+      progressPercentEl.textContent = pct + "%";
+      progressInnerEl.style.width = pct + "%";
+      renderGlasses();
+    }
+
+    async function saveToCloud() {
+      const name = nameInput.value.trim();
+      if (!name) return; // don’t sync without a name
+
+      const id = `${todayKey}_${name.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "user"}`;
+
+      const ref = doc(db, "groups", GROUP_ID, "entries", id);
+      await setDoc(ref, {
+        groupId: GROUP_ID,
+        date: todayKey,
+        name,
+        glasses_count: count,
+        updated_at: new Date().toISOString(),
+      }, { merge: true });
+    }
+
+    function startFriendsListener() {
+      const entriesCol = collection(db, "groups", GROUP_ID, "entries");
+      const q = query(entriesCol, where("date", "==", todayKey));
+      onSnapshot(q, (snapshot) => {
+        const items = [];
+        snapshot.forEach((doc) => {
+          items.push(doc.data());
+        });
+        items.sort((a, b) => (b.glasses_count ?? 0) - (a.glasses_count ?? 0));
+        friendsListEl.innerHTML = "";
+        if (items.length === 0) {
+          friendsEmptyEl.style.display = "block";
+          return;
+        }
+        friendsEmptyEl.style.display = "none";
+        for (const item of items) {
+          const li = document.createElement("li");
+          const nameSpan = document.createElement("span");
+          nameSpan.className = "name";
+          nameSpan.textContent = item.name || "Friend";
+          const countSpan = document.createElement("span");
+          countSpan.textContent = `${item.glasses_count ?? 0} / ${DAILY_GOAL}`;
+          li.appendChild(nameSpan);
+          li.appendChild(countSpan);
+          friendsListEl.appendChild(li);
+        }
+      });
+    }
+
+    // Event wiring
+    addBtn.addEventListener("click", () => {
+      if (count < DAILY_GOAL) {
+        count += 1;
+        storeCountLocal(count);
+        updateView();
+        saveToCloud().catch(console.error);
+      }
+    });
+
+    undoBtn.addEventListener("click", () => {
+      if (count > 0) {
+        count -= 1;
+        storeCountLocal(count);
+        updateView();
+        saveToCloud().catch(console.error);
+      }
+    });
+
+    nameInput.addEventListener("change", () => {
+      const name = nameInput.value.trim();
+      storeName(name);
+      saveToCloud().catch(console.error);
+    });
+
+    // Initial render
+    dateEl.textContent = formatDatePretty(today);
+    updateStatusPill();
+    setInterval(updateStatusPill, 10 * 60 * 1000);
+
+    const storedName = getStoredName();
+    if (storedName) {
+      nameInput.value = storedName;
+    }
+
+    updateView();
+    startFriendsListener();
+  </script>
+</body>
+</html>

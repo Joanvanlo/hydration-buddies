@@ -35,7 +35,7 @@
       background: var(--card-bg);
       border-radius: 26px;
       padding: 24px 26px 22px;
-      width: 360px;
+      width: 380px;
       box-shadow: var(--shadow);
       border: 1px solid rgba(148, 163, 184, 0.18);
     }
@@ -68,10 +68,68 @@
       margin-bottom: 12px;
     }
 
-    .goal-line {
-      font-size: 13px;
-      font-weight: 500;
+    .user-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .user-tab {
+      flex: 1;
+      padding: 5px 0;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 12px;
+      background: #f9fafb;
+      color: #4b5563;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: background 0.15s ease, color 0.15s ease,
+        border-color 0.15s ease, transform 0.08s ease;
+    }
+
+    .user-tab span.emoji {
+      font-size: 14px;
+    }
+
+    .user-tab.active {
+      background: #4c6fff;
+      color: white;
+      border-color: #4c6fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .goal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .goal-row span.label {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .goal-input {
+      width: 56px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      padding: 4px 8px;
+      font-size: 12px;
+      text-align: center;
+      outline: none;
+    }
+
+    .goal-input:focus {
+      border-color: #4c6fff;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
     }
 
     .progress-wrap {
@@ -92,6 +150,13 @@
 
     .progress-percent {
       color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .trophy {
+      font-size: 14px;
     }
 
     .progress-bar {
@@ -100,6 +165,7 @@
       border-radius: 999px;
       background: #e5e7eb;
       overflow: hidden;
+      position: relative;
     }
 
     .progress-inner {
@@ -114,16 +180,17 @@
       justify-content: space-between;
       margin: 10px 0 16px;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .glass-btn {
-      flex: 1;
+      flex: 1 1 calc(100% / 6 - 4px);
       border: none;
       background: #f3f4ff;
       border-radius: 999px;
-      padding: 6px 0 5px;
+      padding: 4px 0 3px;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 19px;
       transition: transform 0.1s ease-out, box-shadow 0.1s ease-out,
         background 0.15s ease-out;
       box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
@@ -142,7 +209,7 @@
     .controls {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .btn {
@@ -185,7 +252,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 6px;
+      margin-top: 4px;
+      margin-bottom: 4px;
     }
 
     .pill {
@@ -197,67 +265,59 @@
       border: 1px solid #bae6fd;
     }
 
-    .name-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin: 10px 0 4px;
-    }
-
-    .name-row label {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .name-input {
-      flex: 1;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      padding: 5px 10px;
-      font-size: 12px;
-      outline: none;
-    }
-
-    .name-input:focus {
-      border-color: #4c6fff;
-      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
-    }
-
-    .friends-card {
+    .meters-card {
       margin-top: 10px;
       padding-top: 8px;
       border-top: 1px dashed rgba(148, 163, 184, 0.5);
       font-size: 12px;
     }
 
-    .friends-title {
+    .meters-title {
       font-weight: 600;
       margin-bottom: 4px;
     }
 
-    .friends-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      max-height: 90px;
-      overflow-y: auto;
-    }
-
-    .friends-list li {
+    .meter-row {
       display: flex;
-      justify-content: space-between;
-      padding: 2px 0;
-      color: var(--text-muted);
+      align-items: center;
+      gap: 8px;
+      margin: 3px 0;
     }
 
-    .friends-list span.name {
+    .meter-name {
+      width: 70px;
       font-weight: 500;
       color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .friends-empty {
+    .meter-bar {
+      flex: 1;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .meter-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #a5b4fc, #4c6fff);
+      width: 0%;
+      transition: width 0.25s ease-out;
+    }
+
+    .meter-text {
+      width: 70px;
+      text-align: right;
       color: var(--text-muted);
       font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
     }
   </style>
 </head>
@@ -271,19 +331,25 @@
       <div class="date" id="date"></div>
     </header>
 
-    <p class="sub">5 glasses during office hours. Tiny habit, big energy.</p>
+    <p class="sub">Choose who you’re tracking, then tap to log their glasses.</p>
 
-    <div class="name-row">
-      <label for="name-input">Your name</label>
-      <input id="name-input" class="name-input" placeholder="Joan" />
+    <div class="user-tabs" id="user-tabs"></div>
+
+    <div class="goal-row">
+      <span class="label">Daily goal</span>
+      <span>
+        <input id="goal-input" class="goal-input" type="number" min="1" max="12" />
+        <span style="font-size:11px;color:var(--text-muted);">glasses</span>
+      </span>
     </div>
-
-    <div class="goal-line">Today's goal: <strong>5 glasses</strong></div>
 
     <div class="progress-wrap">
       <div class="progress-header">
         <span class="progress-text" id="progress-text"></span>
-        <span class="progress-percent" id="progress-percent"></span>
+        <span class="progress-percent" id="progress-percent">
+          <span id="percent-label"></span>
+          <span id="trophy-main" class="trophy" style="display:none;">🏆</span>
+        </span>
       </div>
       <div class="progress-bar">
         <div class="progress-inner" id="progress-inner"></div>
@@ -304,12 +370,9 @@
       <span class="pill" id="status-pill">Today</span>
     </div>
 
-    <div class="friends-card">
-      <div class="friends-title">Today’s crew</div>
-      <ul class="friends-list" id="friends-list"></ul>
-      <div class="friends-empty" id="friends-empty">
-        Share this page with your 2 buddies and you’ll see their progress here.
-      </div>
+    <div class="meters-card">
+      <div class="meters-title">Today’s meter</div>
+      <div id="meters-list"></div>
     </div>
   </div>
 
@@ -326,8 +389,7 @@
       onSnapshot,
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 1️⃣ PASTE YOUR FIREBASE CONFIG HERE
-    // Replace the object below with the firebaseConfig from your Firebase console.
+    // 🔐 Your Firebase config (keep what you already pasted earlier)
     const firebaseConfig = {
   apiKey: "AIzaSyAh3Wqa8NSzdWIXRNBJ6TqYHgNm8y7faI",
   authDomain: "hydration-buddies-5fa86.firebaseapp.com",
@@ -338,34 +400,43 @@
   measurementId: "G-FVEE8GDG13"
 };
 
-    // 2️⃣ Initialize Firebase
+
+    // Initialise Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 3️⃣ Simple shared group id for you & your friends
-    // Everyone using this app will share this data bucket.
+    // Shared group id
     const GROUP_ID = "hydration-besties";
 
-    const DAILY_GOAL = 5;
+    // Three fixed users
+    const USERS = [
+      { id: "joan", name: "Joan", emoji: "🪻" },
+      { id: "loes", name: "Loes", emoji: "🌷" },
+      { id: "john", name: "John", emoji: "🪴" },
+    ];
+
+    const MAX_GLASSES = 12;
     const OFFICE_START = 9;
     const OFFICE_END = 17;
-    const STORAGE_KEY_NAME = "waterTracker_name";
-    const STORAGE_KEY_COUNT_PREFIX = "waterTracker_count_";
+
+    const STORAGE_PREFIX = "waterTracker_v2_";
 
     const today = new Date();
     const todayKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
 
+    // Elements
     const dateEl = document.getElementById("date");
+    const userTabsEl = document.getElementById("user-tabs");
+    const goalInputEl = document.getElementById("goal-input");
     const progressTextEl = document.getElementById("progress-text");
-    const progressPercentEl = document.getElementById("progress-percent");
+    const percentLabelEl = document.getElementById("percent-label");
+    const trophyMainEl = document.getElementById("trophy-main");
     const progressInnerEl = document.getElementById("progress-inner");
     const glassesRowEl = document.getElementById("glasses-row");
     const addBtn = document.getElementById("add-btn");
     const undoBtn = document.getElementById("undo-btn");
     const statusPill = document.getElementById("status-pill");
-    const nameInput = document.getElementById("name-input");
-    const friendsListEl = document.getElementById("friends-list");
-    const friendsEmptyEl = document.getElementById("friends-empty");
+    const metersListEl = document.getElementById("meters-list");
 
     function formatDatePretty(d) {
       return d.toLocaleDateString(undefined, {
@@ -376,30 +447,41 @@
       });
     }
 
-    function getStoredName() {
-      return localStorage.getItem(STORAGE_KEY_NAME) ?? "";
+    function storageKeyCount(userId) {
+      return `${STORAGE_PREFIX}count_${todayKey}_${userId}`;
     }
 
-    function storeName(name) {
-      localStorage.setItem(STORAGE_KEY_NAME, name);
+    function storageKeyGoal(userId) {
+      return `${STORAGE_PREFIX}goal_${userId}`;
     }
 
-    function countKey() {
-      return STORAGE_KEY_COUNT_PREFIX + todayKey;
+    function storageKeySelectedUser() {
+      return `${STORAGE_PREFIX}selectedUser`;
     }
 
-    function getStoredCount() {
-      const raw = localStorage.getItem(countKey());
-      const n = Number(raw);
-      if (Number.isFinite(n) && n >= 0 && n <= DAILY_GOAL) return n;
-      return 0;
+    function clamp(val, min, max) {
+      return Math.min(max, Math.max(min, val));
     }
 
-    function storeCountLocal(count) {
-      localStorage.setItem(countKey(), String(count));
-    }
+    // Local state
+    let selectedUserId =
+      localStorage.getItem(storageKeySelectedUser()) || USERS[0].id;
 
-    let count = getStoredCount();
+    const counts = {};
+    const goals = {};
+
+    // Init counts and goals from localStorage
+    for (const u of USERS) {
+      const rawCount = Number(localStorage.getItem(storageKeyCount(u.id)));
+      counts[u.id] =
+        Number.isFinite(rawCount) && rawCount >= 0 ? rawCount : 0;
+
+      const rawGoal = Number(localStorage.getItem(storageKeyGoal(u.id)));
+      goals[u.id] =
+        Number.isFinite(rawGoal) && rawGoal >= 1 && rawGoal <= MAX_GLASSES
+          ? rawGoal
+          : 8; // default goal
+    }
 
     function updateStatusPill() {
       const hour = new Date().getHours();
@@ -416,99 +498,183 @@
       }
     }
 
+    function renderUserTabs() {
+      userTabsEl.innerHTML = "";
+      for (const u of USERS) {
+        const btn = document.createElement("button");
+        btn.className =
+          "user-tab" + (u.id === selectedUserId ? " active" : "");
+        btn.innerHTML = `<span class="emoji">${u.emoji}</span><span>${u.name}</span>`;
+        btn.addEventListener("click", () => {
+          if (selectedUserId !== u.id) {
+            selectedUserId = u.id;
+            localStorage.setItem(storageKeySelectedUser(), selectedUserId);
+            renderUserTabs();
+            updateView();
+          }
+        });
+        userTabsEl.appendChild(btn);
+      }
+    }
+
     function renderGlasses() {
+      const count = counts[selectedUserId] || 0;
       glassesRowEl.innerHTML = "";
-      for (let i = 1; i <= DAILY_GOAL; i++) {
+      for (let i = 1; i <= MAX_GLASSES; i++) {
         const btn = document.createElement("button");
         btn.className = "glass-btn";
         btn.textContent = i <= count ? "💧" : "🥛";
         if (i <= count) btn.classList.add("filled");
         btn.addEventListener("click", () => {
-          count = i;
-          storeCountLocal(count);
+          counts[selectedUserId] = i;
+          localStorage.setItem(
+            storageKeyCount(selectedUserId),
+            String(i)
+          );
           updateView();
-          saveToCloud().catch(console.error);
+          saveToCloud(selectedUserId).catch(console.error);
         });
         glassesRowEl.appendChild(btn);
       }
     }
 
-    function updateView() {
-      progressTextEl.textContent = `${count} / ${DAILY_GOAL} glasses`;
-      const pct = Math.round((count / DAILY_GOAL) * 100);
-      progressPercentEl.textContent = pct + "%";
-      progressInnerEl.style.width = pct + "%";
-      renderGlasses();
+    function renderMeters() {
+      metersListEl.innerHTML = "";
+      for (const u of USERS) {
+        const count = counts[u.id] || 0;
+        const goal = goals[u.id] || 8;
+        const pct = clamp((count / MAX_GLASSES) * 100, 0, 100);
+        const row = document.createElement("div");
+        row.className = "meter-row";
+
+        const nameEl = document.createElement("div");
+        nameEl.className = "meter-name";
+        nameEl.innerHTML = `<span>${u.emoji}</span><span>${u.name}</span>`;
+
+        const bar = document.createElement("div");
+        bar.className = "meter-bar";
+        const inner = document.createElement("div");
+        inner.className = "meter-inner";
+        inner.style.width = pct + "%";
+        bar.appendChild(inner);
+
+        const text = document.createElement("div");
+        text.className = "meter-text";
+        const trophy =
+          count >= goal ? "🏆" : "";
+        text.innerHTML = `${count}/${goal} ${trophy}`;
+
+        row.appendChild(nameEl);
+        row.appendChild(bar);
+        row.appendChild(text);
+        metersListEl.appendChild(row);
+      }
     }
 
-    async function saveToCloud() {
-      const name = nameInput.value.trim();
-      if (!name) return; // don’t sync without a name
+    function updateView() {
+      const count = counts[selectedUserId] || 0;
+      const goal = goals[selectedUserId] || 8;
+      const pctGoal = clamp((count / goal) * 100, 0, 999);
+      const pctMax = clamp((count / MAX_GLASSES) * 100, 0, 100);
 
-      const id = `${todayKey}_${name.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "user"}`;
+      goalInputEl.value = goal;
+      progressTextEl.textContent = `${count} / ${goal} glasses`;
+      percentLabelEl.textContent = Math.round(pctGoal) + "% of goal";
+      progressInnerEl.style.width = pctMax + "%";
 
+      trophyMainEl.style.display = count >= goal ? "inline" : "none";
+
+      renderGlasses();
+      renderMeters();
+    }
+
+    async function saveToCloud(userId) {
+      const user = USERS.find((u) => u.id === userId);
+      if (!user) return;
+
+      const count = counts[userId] || 0;
+      const goal = goals[userId] || 8;
+
+      const id = `${todayKey}_${userId}`;
       const ref = doc(db, "groups", GROUP_ID, "entries", id);
-      await setDoc(ref, {
-        groupId: GROUP_ID,
-        date: todayKey,
-        name,
-        glasses_count: count,
-        updated_at: new Date().toISOString(),
-      }, { merge: true });
+      await setDoc(
+        ref,
+        {
+          groupId: GROUP_ID,
+          date: todayKey,
+          user_id: userId,
+          name: user.name,
+          glasses_count: count,
+          goal,
+          updated_at: new Date().toISOString(),
+        },
+        { merge: true }
+      );
     }
 
     function startFriendsListener() {
       const entriesCol = collection(db, "groups", GROUP_ID, "entries");
       const q = query(entriesCol, where("date", "==", todayKey));
       onSnapshot(q, (snapshot) => {
-        const items = [];
-        snapshot.forEach((doc) => {
-          items.push(doc.data());
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const userId = data.user_id;
+          if (!userId) return;
+          if (typeof data.glasses_count === "number") {
+            counts[userId] = clamp(data.glasses_count, 0, MAX_GLASSES);
+            localStorage.setItem(
+              storageKeyCount(userId),
+              String(counts[userId])
+            );
+          }
+          if (typeof data.goal === "number") {
+            goals[userId] = clamp(data.goal, 1, MAX_GLASSES);
+            localStorage.setItem(
+              storageKeyGoal(userId),
+              String(goals[userId])
+            );
+          }
         });
-        items.sort((a, b) => (b.glasses_count ?? 0) - (a.glasses_count ?? 0));
-        friendsListEl.innerHTML = "";
-        if (items.length === 0) {
-          friendsEmptyEl.style.display = "block";
-          return;
-        }
-        friendsEmptyEl.style.display = "none";
-        for (const item of items) {
-          const li = document.createElement("li");
-          const nameSpan = document.createElement("span");
-          nameSpan.className = "name";
-          nameSpan.textContent = item.name || "Friend";
-          const countSpan = document.createElement("span");
-          countSpan.textContent = `${item.glasses_count ?? 0} / ${DAILY_GOAL}`;
-          li.appendChild(nameSpan);
-          li.appendChild(countSpan);
-          friendsListEl.appendChild(li);
-        }
+        updateView();
       });
     }
 
-    // Event wiring
+    // Events
     addBtn.addEventListener("click", () => {
-      if (count < DAILY_GOAL) {
-        count += 1;
-        storeCountLocal(count);
-        updateView();
-        saveToCloud().catch(console.error);
-      }
+      const current = counts[selectedUserId] || 0;
+      if (current >= MAX_GLASSES) return;
+      counts[selectedUserId] = current + 1;
+      localStorage.setItem(
+        storageKeyCount(selectedUserId),
+        String(counts[selectedUserId])
+      );
+      updateView();
+      saveToCloud(selectedUserId).catch(console.error);
     });
 
     undoBtn.addEventListener("click", () => {
-      if (count > 0) {
-        count -= 1;
-        storeCountLocal(count);
-        updateView();
-        saveToCloud().catch(console.error);
-      }
+      const current = counts[selectedUserId] || 0;
+      if (current <= 0) return;
+      counts[selectedUserId] = current - 1;
+      localStorage.setItem(
+        storageKeyCount(selectedUserId),
+        String(counts[selectedUserId])
+      );
+      updateView();
+      saveToCloud(selectedUserId).catch(console.error);
     });
 
-    nameInput.addEventListener("change", () => {
-      const name = nameInput.value.trim();
-      storeName(name);
-      saveToCloud().catch(console.error);
+    goalInputEl.addEventListener("change", () => {
+      let val = Number(goalInputEl.value);
+      if (!Number.isFinite(val)) val = goals[selectedUserId] || 8;
+      val = clamp(val, 1, MAX_GLASSES);
+      goals[selectedUserId] = val;
+      localStorage.setItem(
+        storageKeyGoal(selectedUserId),
+        String(val)
+      );
+      updateView();
+      saveToCloud(selectedUserId).catch(console.error);
     });
 
     // Initial render
@@ -516,11 +682,7 @@
     updateStatusPill();
     setInterval(updateStatusPill, 10 * 60 * 1000);
 
-    const storedName = getStoredName();
-    if (storedName) {
-      nameInput.value = storedName;
-    }
-
+    renderUserTabs();
     updateView();
     startFriendsListener();
   </script>

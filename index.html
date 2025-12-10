@@ -72,7 +72,6 @@
       margin-bottom: 12px;
     }
 
-    /* Sound toggle row */
     .sound-row {
       display: flex;
       justify-content: flex-end;
@@ -189,7 +188,6 @@
       box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
     }
 
-    /* 3 rows x 5 columns = 15 glasses */
     .glasses-row {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -214,7 +212,6 @@
       box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
     }
 
-    /* glass pop / slide animation */
     .glass-btn.pop {
       animation: glassPop 0.25s ease-out;
     }
@@ -262,7 +259,6 @@
       margin-bottom: 10px;
     }
 
-    /* Person cards */
     .person-card {
       background: #ffffff;
       border-radius: 18px;
@@ -368,7 +364,6 @@
       color: var(--text-muted);
     }
 
-    /* Confetti */
     .confetti-piece {
       position: fixed;
       font-size: 18px;
@@ -388,7 +383,6 @@
       }
     }
 
-    /* Falling droplet into glass */
     .glass-drop {
       position: absolute;
       font-size: 18px;
@@ -458,7 +452,6 @@
     </div>
   </div>
 
-  <!-- Firebase + app logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import {
@@ -470,7 +463,6 @@
       onSnapshot,
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 🔐 Your Firebase config - paste your real values here
     const firebaseConfig = {
   apiKey: "AIzaSyAh3Wqa8NSzdWIXRNBJ6TqYHgNm8y7faI",
   authDomain: "hydration-buddies-5fa86.firebaseapp.com",
@@ -498,7 +490,7 @@
     const OFFICE_END_H = 17;
     const OFFICE_END_M = 30;
 
-    const STORAGE_PREFIX = "waterTracker_v10_";
+    const STORAGE_PREFIX = "waterTracker_v11_";
 
     const today = new Date();
     const todayKey = today.toISOString().slice(0, 10);
@@ -513,30 +505,28 @@
     const soundToggleInput = document.getElementById("sound-toggle-input");
     const appEl = document.querySelector(".app");
 
-    function formatDatePretty(d) {
-      return d.toLocaleDateString(undefined, {
-        weekday: "long",
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      });
-    }
-
     function storageKeyCount(userId) {
       return `${STORAGE_PREFIX}count_${todayKey}_${userId}`;
     }
-
     function storageKeyGoal(userId) {
       return `${STORAGE_PREFIX}goal_${userId}`;
     }
-
     function storageKeySelectedUser() {
       return `${STORAGE_PREFIX}selectedUser`;
     }
-
     function storageKeySounds() {
       return `${STORAGE_PREFIX}sounds`;
     }
+
+    // 🔁 Hard reset counts when day changes (so everyone starts at 0)
+    const LAST_DATE_STORAGE_KEY = STORAGE_PREFIX + "lastDateKey";
+    const lastDate = localStorage.getItem(LAST_DATE_STORAGE_KEY);
+    if (lastDate && lastDate !== todayKey) {
+      Object.keys(localStorage)
+        .filter((k) => k.startsWith(STORAGE_PREFIX + "count_"))
+        .forEach((k) => localStorage.removeItem(k));
+    }
+    localStorage.setItem(LAST_DATE_STORAGE_KEY, todayKey);
 
     function clamp(val, min, max) {
       return Math.min(max, Math.max(min, val));
@@ -555,17 +545,16 @@
       return "Goal reached, hydration hero 💪";
     }
 
-    // Audio
-    let audioCtx = null;
-    function getAudioContext() {
-      if (!audioCtx) {
-        const Ctor = window.AudioContext || window.webkitAudioContext;
-        if (!Ctor) return null;
-        audioCtx = new Ctor();
-      }
-      return audioCtx;
+    function formatDatePretty(d) {
+      return d.toLocaleDateString(undefined, {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
     }
 
+    // simple sound toggle (you can replace with real audio files later)
     let soundsEnabled =
       localStorage.getItem(storageKeySounds()) !== "off";
 
@@ -578,52 +567,57 @@
       );
     });
 
-    function playTone(freq, duration) {
+    function playClickSound() {
       if (!soundsEnabled) return;
-      const ctx = getAudioContext();
-      if (!ctx) return;
+      // tiny synthetic beep
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.value = freq;
+      osc.frequency.value = 900;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const now = ctx.currentTime;
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+      osc.start(now);
+      osc.stop(now + 0.13);
+    }
+
+    function playGoalSound() {
+      if (!soundsEnabled) return;
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.value = 600;
       osc.connect(gain);
       gain.connect(ctx.destination);
       const now = ctx.currentTime;
       gain.gain.setValueAtTime(0.12, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
       osc.start(now);
-      osc.stop(now + duration);
+      osc.stop(now + 0.25);
     }
 
-    function playClickSound() {
-      playTone(900, 0.13);
-    }
-
-    function playGoalSound() {
-      playTone(600, 0.25);
-    }
-
-    // Confetti – more pieces, across the page
     function launchConfetti() {
       for (let i = 0; i < 40; i++) {
         const piece = document.createElement("span");
         piece.className = "confetti-piece";
         piece.textContent = Math.random() < 0.5 ? "💧" : "🎉";
-
-        const left = Math.random() * 100; // 0–100vw
-        const top = 5 + Math.random() * 20; // 5–25vh
-
+        const left = Math.random() * 100;
+        const top = 5 + Math.random() * 20;
         piece.style.left = left + "vw";
         piece.style.top = top + "vh";
-
         document.body.appendChild(piece);
-        setTimeout(() => {
-          piece.remove();
-        }, 1200);
+        setTimeout(() => piece.remove(), 1200);
       }
     }
 
-    // State
     let selectedUserId =
       localStorage.getItem(storageKeySelectedUser()) || USERS[0].id;
 
@@ -644,7 +638,6 @@
           ? rawGoal
           : 8;
 
-      // Start from whether they already meet their goal today
       lastSuccess[u.id] = counts[u.id] >= goals[u.id];
     }
 
@@ -700,87 +693,97 @@
     }
 
     function renderGlasses() {
-  const count = counts[selectedUserId] || 0;
-  glassesRowEl.innerHTML = "";
-  for (let i = 1; i <= MAX_GLASSES; i++) {
-    const btn = document.createElement("button");
-    btn.className = "glass-btn";
-    btn.textContent = i <= count ? "💧" : "🥛";
-    if (i <= count) btn.classList.add("filled");
+      const count = counts[selectedUserId] || 0;
+      glassesRowEl.innerHTML = "";
+      for (let i = 1; i <= MAX_GLASSES; i++) {
+        const btn = document.createElement("button");
+        btn.className = "glass-btn";
+        btn.textContent = i <= count ? "💧" : "🥛";
+        if (i <= count) btn.classList.add("filled");
 
-    btn.addEventListener("click", () => {
-      const current = counts[selectedUserId] || 0;
+        btn.addEventListener("click", () => {
+          const current = counts[selectedUserId] || 0;
 
-      // 1️⃣ UNFILL: clicking the last filled glass -> just step back, no drop
-      if (i === current) {
-        const next = clamp(current - 1, 0, MAX_GLASSES);
-        counts[selectedUserId] = next;
-        localStorage.setItem(
-          storageKeyCount(selectedUserId),
-          String(next)
-        );
-        playClickSound();
-        updateView();
-        saveToCloud(selectedUserId).catch(console.error);
-        return;
+          // UNFILL: clicking the last filled glass -> just step back, no drop
+          if (i === current) {
+            const next = clamp(current - 1, 0, MAX_GLASSES);
+            counts[selectedUserId] = next;
+            localStorage.setItem(
+              storageKeyCount(selectedUserId),
+              String(next)
+            );
+            playClickSound();
+            updateView();
+            saveToCloud(selectedUserId).catch(console.error);
+            return;
+          }
+
+          // FILL: going up to this glass -> drop first, then fill
+          const next = i;
+
+          const rect = btn.getBoundingClientRect();
+          const appRect = appEl.getBoundingClientRect();
+
+          // falling droplet
+          const drop = document.createElement("span");
+          drop.className = "glass-drop";
+          drop.textContent = "💧";
+          drop.style.left =
+            rect.left - appRect.left + rect.width / 2 - 9 + "px";
+          drop.style.top =
+            rect.top - appRect.top - 6 + "px";
+          appEl.appendChild(drop);
+          setTimeout(() => drop.remove(), 400);
+
+          setTimeout(() => {
+            counts[selectedUserId] = next;
+            localStorage.setItem(
+              storageKeyCount(selectedUserId),
+              String(next)
+            );
+
+            playClickSound();
+            updateView();
+
+            const newBtn = glassesRowEl.children[i - 1];
+            if (newBtn) {
+              newBtn.classList.add("pop");
+              setTimeout(() => newBtn.classList.remove("pop"), 250);
+            }
+
+            saveToCloud(selectedUserId).catch(console.error);
+          }, 150);
+        });
+
+        glassesRowEl.appendChild(btn);
       }
-
-      // 2️⃣ FILL: going up to this glass -> drop first, then fill
-      const next = i;
-
-      // get position of this glass BEFORE any re-render
-      const rect = btn.getBoundingClientRect();
-      const appRect = appEl.getBoundingClientRect();
-
-      // create falling droplet above this glass
-      const drop = document.createElement("span");
-      drop.className = "glass-drop";
-      drop.textContent = "💧";
-      drop.style.left =
-        rect.left - appRect.left + rect.width / 2 - 9 + "px";
-      drop.style.top =
-        rect.top - appRect.top - 6 + "px";
-      appEl.appendChild(drop);
-      setTimeout(() => drop.remove(), 400);
-
-      // after a short delay, actually update state + UI
-      setTimeout(() => {
-        counts[selectedUserId] = next;
-        localStorage.setItem(
-          storageKeyCount(selectedUserId),
-          String(next)
-        );
-
-        playClickSound();
-        updateView();
-
-        // pop the *new* glass element after re-render
-        const newBtn = glassesRowEl.children[i - 1];
-        if (newBtn) {
-          newBtn.classList.add("pop");
-          setTimeout(() => newBtn.classList.remove("pop"), 250);
-        }
-
-        saveToCloud(selectedUserId).catch(console.error);
-      }, 150);
-    });
-
-    glassesRowEl.appendChild(btn);
-  }
-}
-
-
-    function didMeetGoal(userId, dateKey) {
-      const day = history[userId]?.[dateKey];
-      if (!day) return false;
-      const goal = day.goal || 0;
-      const count = day.glasses_count || 0;
-      return goal > 0 && count >= goal;
     }
 
+    function didMeetGoal(userId, dateKey) {
+  const day = history[userId]?.[dateKey];
+  if (!day) return false;
+
+  // If we've explicitly stored success, trust that
+  if (day.goal_met === true) return true;
+
+  const goal = day.goal || 0;
+  const count = day.glasses_count || 0;
+  return goal > 0 && count >= goal;
+}
+
+    // 🧠 New streak logic: count from yesterday if today isn't done yet
     function computeStreak(userId) {
       let streak = 0;
-      for (let offset = 0; offset < 30; offset++) {
+      const todayKeyLocal = dateKeyForOffset(0);
+      let startOffset = 0;
+
+      const todayDay = history[userId]?.[todayKeyLocal];
+      if (!todayDay || !didMeetGoal(userId, todayKeyLocal)) {
+        // no data for today or goal not reached yet -> start from yesterday
+        startOffset = 1;
+      }
+
+      for (let offset = startOffset; offset < 30 + startOffset; offset++) {
         const key = dateKeyForOffset(-offset);
         const day = history[userId]?.[key];
         if (!day) break;
@@ -897,28 +900,30 @@
     }
 
     async function saveToCloud(userId) {
-      const user = USERS.find((u) => u.id === userId);
-      if (!user) return;
+  const user = USERS.find((u) => u.id === userId);
+  if (!user) return;
 
-      const count = counts[userId] || 0;
-      const goal = goals[userId] || 8;
+  const count = counts[userId] || 0;
+  const goal = goals[userId] || 8;
+  const goalMet = goal > 0 && count >= goal;
 
-      const id = `${todayKey}_${userId}`;
-      const ref = doc(db, "groups", GROUP_ID, "entries", id);
-      await setDoc(
-        ref,
-        {
-          groupId: GROUP_ID,
-          date: todayKey,
-          user_id: userId,
-          name: user.name,
-          glasses_count: count,
-          goal,
-          updated_at: new Date().toISOString(),
-        },
-        { merge: true }
-      );
-    }
+  const id = `${todayKey}_${userId}`;
+  const ref = doc(db, "groups", GROUP_ID, "entries", id);
+  await setDoc(
+    ref,
+    {
+      groupId: GROUP_ID,
+      date: todayKey,
+      user_id: userId,
+      name: user.name,
+      glasses_count: count,
+      goal,
+      goal_met: goalMet,        // 👈 NEW
+      updated_at: new Date().toISOString(),
+    },
+    { merge: true }
+  );
+}
 
     function startFriendsListener() {
       const entriesCol = collection(db, "groups", GROUP_ID, "entries");

@@ -44,9 +44,7 @@
       z-index: 1;
     }
 
-    .app-header {
-      margin-bottom: 14px;
-    }
+    .app-header { margin-bottom: 14px; }
 
     .title {
       font-size: 20px;
@@ -56,9 +54,7 @@
       gap: 6px;
     }
 
-    .title-emoji {
-      font-size: 22px;
-    }
+    .title-emoji { font-size: 22px; }
 
     .date {
       margin-top: 4px;
@@ -87,9 +83,7 @@
       cursor: pointer;
     }
 
-    .sound-toggle input {
-      display: none;
-    }
+    .sound-toggle input { display: none; }
 
     .sound-toggle-pill {
       width: 32px;
@@ -112,44 +106,35 @@
       transition: transform 0.15s ease;
     }
 
-    .sound-toggle input:checked + .sound-toggle-pill {
-      background: #4c6fff;
-    }
-
-    .sound-toggle input:checked + .sound-toggle-pill .sound-toggle-knob {
-      transform: translateX(14px);
-    }
-
-    .sound-toggle-label {
-      user-select: none;
-    }
+    .sound-toggle input:checked + .sound-toggle-pill { background: #4c6fff; }
+    .sound-toggle input:checked + .sound-toggle-pill .sound-toggle-knob { transform: translateX(14px); }
+    .sound-toggle-label { user-select: none; }
 
     .user-tabs {
-      display: flex;
-      gap: 6px;
-      margin: 10px 0 16px;
-    }
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 10px 0 16px;
+}
 
-    .user-tab {
-      flex: 1;
-      padding: 5px 0;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      font-size: 12px;
-      background: #f9fafb;
-      color: #4b5563;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      transition: background 0.15s ease, color 0.15s ease,
-        border-color 0.15s ease, transform 0.08s ease;
-    }
+.user-tab {
+  width: 100%;
+  padding: 6px 0;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font-size: 12px;
+  background: #f9fafb;
+  color: #4b5563;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease, transform 0.08s ease;
+}
 
-    .user-tab span.emoji {
-      font-size: 14px;
-    }
+    .user-tab span.emoji { font-size: 14px; }
 
     .user-tab.active {
       background: #4c6fff;
@@ -188,6 +173,12 @@
       box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
     }
 
+    .goal-input[disabled] {
+      background: #f3f4f6;
+      color: #6b7280;
+      cursor: not-allowed;
+    }
+
     .glasses-row {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
@@ -212,9 +203,7 @@
       box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
     }
 
-    .glass-btn.pop {
-      animation: glassPop 0.25s ease-out;
-    }
+    .glass-btn.pop { animation: glassPop 0.25s ease-out; }
 
     @keyframes glassPop {
       0% { transform: translateY(3px) scale(0.9); }
@@ -268,11 +257,7 @@
       border: 1px solid rgba(148, 163, 184, 0.18);
     }
 
-    .person-inner {
-      display: flex;
-      align-items: stretch;
-      gap: 10px;
-    }
+    .person-inner { display: flex; align-items: stretch; gap: 10px; }
 
     .person-left {
       flex: 2;
@@ -307,9 +292,7 @@
       color: var(--text-main);
     }
 
-    .meter-name span.emoji {
-      font-size: 16px;
-    }
+    .meter-name span.emoji { font-size: 16px; }
 
     .meter-bar {
       width: 100%;
@@ -353,10 +336,7 @@
       font-weight: 700;
     }
 
-    .streak-fire {
-      font-size: 16px;
-      line-height: 1.1;
-    }
+    .streak-fire { font-size: 16px; line-height: 1.1; }
 
     .streak-label {
       font-size: 10px;
@@ -373,14 +353,8 @@
     }
 
     @keyframes confettiFall {
-      0% {
-        opacity: 1;
-        transform: translateY(0) rotate(0deg);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(260px) rotate(30deg);
-      }
+      0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(260px) rotate(30deg); }
     }
 
     .glass-drop {
@@ -392,17 +366,9 @@
     }
 
     @keyframes dropIntoGlass {
-      0% {
-        transform: translateY(-14px);
-        opacity: 0;
-      }
-      20% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(6px);
-        opacity: 0;
-      }
+      0% { transform: translateY(-14px); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(6px); opacity: 0; }
     }
   </style>
 </head>
@@ -416,7 +382,7 @@
       <div class="date" id="date"></div>
     </header>
 
-    <p class="sub">Pick who you’re logging for, then tap glasses to update their day.</p>
+    <p class="sub">Pick who you’re logging for, then tap to update.</p>
 
     <div class="sound-row">
       <label class="sound-toggle">
@@ -431,10 +397,10 @@
     <div class="user-tabs" id="user-tabs"></div>
 
     <div class="goal-row">
-      <span class="label">Daily goal for this person</span>
+      <span class="label" id="goal-label">Daily goal for this person</span>
       <span>
         <input id="goal-input" class="goal-input" type="number" min="1" max="15" />
-        <span style="font-size:11px;color:var(--text-muted);">glasses</span>
+        <span id="goal-unit" style="font-size:11px;color:var(--text-muted);">glasses</span>
       </span>
     </div>
 
@@ -464,14 +430,14 @@
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
-  apiKey: "AIzaSyAh3Wqa8NSzdWIXRNBJ6TqYHgNm8y7faI",
-  authDomain: "hydration-buddies-5fa86.firebaseapp.com",
-  projectId: "hydration-buddies-5fa86",
-  storageBucket: "hydration-buddies-5fa86.appspot.com",
-  messagingSenderId: "23662841356",
-  appId: "1:23662841356:web:41c2195ab1acb139439329",
-  measurementId: "G-FVEE8GDG13"
-};
+      apiKey: "AIzaSyAh3Wqa8NSzdWIXRNBJ6TqYHgNm8y7faI",
+      authDomain: "hydration-buddies-5fa86.firebaseapp.com",
+      projectId: "hydration-buddies-5fa86",
+      storageBucket: "hydration-buddies-5fa86.appspot.com",
+      messagingSenderId: "23662841356",
+      appId: "1:23662841356:web:41c2195ab1acb139439329",
+      measurementId: "G-FVEE8GDG13"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -479,9 +445,10 @@
     const GROUP_ID = "hydration-besties";
 
     const USERS = [
-      { id: "joan", name: "Joan", emoji: "🧝‍♀️" },
-      { id: "loes", name: "Loes", emoji: "🐱" },
-      { id: "john", name: "John", emoji: "💪" },
+      { id: "joan",  name: "Joan",  emoji: "🧝‍♀️", cadence: "daily",  defaultGoal: 8 },
+      { id: "loes",  name: "Loes",  emoji: "🐱",    cadence: "daily",  defaultGoal: 8 },
+      { id: "john",  name: "John",  emoji: "💪",    cadence: "daily",  defaultGoal: 8 },
+      { id: "plant", name: "Perry", emoji: "🌿",    cadence: "weekly", defaultGoal: 1 },
     ];
 
     const MAX_GLASSES = 15;
@@ -490,14 +457,16 @@
     const OFFICE_END_H = 17;
     const OFFICE_END_M = 30;
 
-    const STORAGE_PREFIX = "waterTracker_v11_";
+    const STORAGE_PREFIX = "waterTracker_v12_";
 
-    const today = new Date();
-    const todayKey = today.toISOString().slice(0, 10);
+    const now = new Date();
+    const todayKey = now.toISOString().slice(0, 10);
 
     const dateEl = document.getElementById("date");
     const userTabsEl = document.getElementById("user-tabs");
     const goalInputEl = document.getElementById("goal-input");
+    const goalLabelEl = document.getElementById("goal-label");
+    const goalUnitEl  = document.getElementById("goal-unit");
     const glassesRowEl = document.getElementById("glasses-row");
     const statusPill = document.getElementById("status-pill");
     const timeLeftEl = document.getElementById("time-left");
@@ -505,44 +474,8 @@
     const soundToggleInput = document.getElementById("sound-toggle-input");
     const appEl = document.querySelector(".app");
 
-    function storageKeyCount(userId) {
-      return `${STORAGE_PREFIX}count_${todayKey}_${userId}`;
-    }
-    function storageKeyGoal(userId) {
-      return `${STORAGE_PREFIX}goal_${userId}`;
-    }
-    function storageKeySelectedUser() {
-      return `${STORAGE_PREFIX}selectedUser`;
-    }
-    function storageKeySounds() {
-      return `${STORAGE_PREFIX}sounds`;
-    }
-
-    // 🔁 Hard reset counts when day changes (so everyone starts at 0)
-    const LAST_DATE_STORAGE_KEY = STORAGE_PREFIX + "lastDateKey";
-    const lastDate = localStorage.getItem(LAST_DATE_STORAGE_KEY);
-    if (lastDate && lastDate !== todayKey) {
-      Object.keys(localStorage)
-        .filter((k) => k.startsWith(STORAGE_PREFIX + "count_"))
-        .forEach((k) => localStorage.removeItem(k));
-    }
-    localStorage.setItem(LAST_DATE_STORAGE_KEY, todayKey);
-
     function clamp(val, min, max) {
       return Math.min(max, Math.max(min, val));
-    }
-
-    function dateKeyForOffset(offsetDays) {
-      const d = new Date();
-      d.setDate(d.getDate() + offsetDays);
-      return d.toISOString().slice(0, 10);
-    }
-
-    function getEncouragement(count, goal) {
-      if (count <= 0) return "Let’s get that first glass 👀";
-      if (count < goal / 2) return "Nice start, keep sipping 💧";
-      if (count < goal) return "So close to your goal!";
-      return "Goal reached, hydration hero 💪";
     }
 
     function formatDatePretty(d) {
@@ -554,22 +487,98 @@
       });
     }
 
-    // simple sound toggle (you can replace with real audio files later)
-    let soundsEnabled =
-      localStorage.getItem(storageKeySounds()) !== "off";
+    // --- Period keys (daily vs weekly) ---
+    function toDateKey(d) {
+      return d.toISOString().slice(0, 10); // YYYY-MM-DD
+    }
 
+    // ISO-ish week key: YYYY-Www
+    function toWeekKey(d) {
+      const date = new Date(d);
+      date.setHours(0, 0, 0, 0);
+
+      // Thursday in current week decides the year
+      date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+      const weekYear = date.getFullYear();
+
+      // Week 1 is the week with Jan 4th
+      const week1 = new Date(weekYear, 0, 4);
+      const week1Day = (week1.getDay() + 6) % 7;
+      week1.setDate(week1.getDate() - week1Day);
+
+      const diffDays = Math.round((date - week1) / 86400000);
+      const week = 1 + Math.floor(diffDays / 7);
+      return `${weekYear}-W${String(week).padStart(2, "0")}`;
+    }
+
+    function getUser(userId) {
+      return USERS.find(u => u.id === userId) || USERS[0];
+    }
+
+    function getPeriodKeyForUser(user, d = new Date()) {
+      return user.cadence === "weekly" ? toWeekKey(d) : toDateKey(d);
+    }
+
+    function dayKeyOffset(offsetDays) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      return toDateKey(d);
+    }
+
+    function weekKeyOffset(offsetWeeks) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetWeeks * 7);
+      return toWeekKey(d);
+    }
+
+    // --- Storage keys ---
+    function storageKeyCount(userId, periodKey) {
+      return `${STORAGE_PREFIX}count_${periodKey}_${userId}`;
+    }
+    function storageKeyGoal(userId) {
+      return `${STORAGE_PREFIX}goal_${userId}`;
+    }
+    function storageKeySelectedUser() {
+      return `${STORAGE_PREFIX}selectedUser`;
+    }
+    function storageKeySounds() {
+      return `${STORAGE_PREFIX}sounds`;
+    }
+
+    // 🔁 Daily reset for daily users only (weekly plant keys are not cleared)
+    const LAST_DATE_STORAGE_KEY = STORAGE_PREFIX + "lastDateKey";
+    const lastDate = localStorage.getItem(LAST_DATE_STORAGE_KEY);
+    if (lastDate && lastDate !== todayKey) {
+      Object.keys(localStorage).forEach((k) => {
+        // delete daily count keys (YYYY-MM-DD), keep weekly keys (contain "-W")
+        if (k.startsWith(STORAGE_PREFIX + "count_") && !k.includes("-W")) {
+          localStorage.removeItem(k);
+        }
+      });
+    }
+    localStorage.setItem(LAST_DATE_STORAGE_KEY, todayKey);
+
+    // --- Encouragement ---
+    function getEncouragement(count, goal, user) {
+      if (user.cadence === "weekly") {
+        return count >= goal ? "Plant is thriving 🌿✨" : "Water me once this week pls 🙏";
+      }
+      if (count <= 0) return "Let’s get that first glass 👀";
+      if (count < goal / 2) return "Nice start, keep sipping 💧";
+      if (count < goal) return "So close to your goal!";
+      return "Goal reached, hydration hero 💪";
+    }
+
+    // --- Sound toggle ---
+    let soundsEnabled = localStorage.getItem(storageKeySounds()) !== "off";
     soundToggleInput.checked = soundsEnabled;
     soundToggleInput.addEventListener("change", () => {
       soundsEnabled = soundToggleInput.checked;
-      localStorage.setItem(
-        storageKeySounds(),
-        soundsEnabled ? "on" : "off"
-      );
+      localStorage.setItem(storageKeySounds(), soundsEnabled ? "on" : "off");
     });
 
     function playClickSound() {
       if (!soundsEnabled) return;
-      // tiny synthetic beep
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if (!Ctx) return;
       const ctx = new Ctx();
@@ -579,11 +588,11 @@
       osc.frequency.value = 900;
       osc.connect(gain);
       gain.connect(ctx.destination);
-      const now = ctx.currentTime;
-      gain.gain.setValueAtTime(0.1, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
-      osc.start(now);
-      osc.stop(now + 0.13);
+      const t = ctx.currentTime;
+      gain.gain.setValueAtTime(0.1, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
+      osc.start(t);
+      osc.stop(t + 0.13);
     }
 
     function playGoalSound() {
@@ -597,11 +606,11 @@
       osc.frequency.value = 600;
       osc.connect(gain);
       gain.connect(ctx.destination);
-      const now = ctx.currentTime;
-      gain.gain.setValueAtTime(0.12, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-      osc.start(now);
-      osc.stop(now + 0.25);
+      const t = ctx.currentTime;
+      gain.gain.setValueAtTime(0.12, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t);
+      osc.stop(t + 0.25);
     }
 
     function launchConfetti() {
@@ -609,15 +618,14 @@
         const piece = document.createElement("span");
         piece.className = "confetti-piece";
         piece.textContent = Math.random() < 0.5 ? "💧" : "🎉";
-        const left = Math.random() * 100;
-        const top = 5 + Math.random() * 20;
-        piece.style.left = left + "vw";
-        piece.style.top = top + "vh";
+        piece.style.left = (Math.random() * 100) + "vw";
+        piece.style.top = (5 + Math.random() * 20) + "vh";
         document.body.appendChild(piece);
         setTimeout(() => piece.remove(), 1200);
       }
     }
 
+    // --- State ---
     let selectedUserId =
       localStorage.getItem(storageKeySelectedUser()) || USERS[0].id;
 
@@ -628,22 +636,36 @@
 
     for (const u of USERS) {
       history[u.id] = {};
-      const rawCount = Number(localStorage.getItem(storageKeyCount(u.id)));
-      counts[u.id] =
-        Number.isFinite(rawCount) && rawCount >= 0 ? rawCount : 0;
+
+      const periodKey = getPeriodKeyForUser(u, now);
+      const rawCount = Number(localStorage.getItem(storageKeyCount(u.id, periodKey)));
+      counts[u.id] = Number.isFinite(rawCount) && rawCount >= 0 ? rawCount : 0;
 
       const rawGoal = Number(localStorage.getItem(storageKeyGoal(u.id)));
-      goals[u.id] =
-        Number.isFinite(rawGoal) && rawGoal >= 1 && rawGoal <= MAX_GLASSES
-          ? rawGoal
-          : 8;
+      let goal = (Number.isFinite(rawGoal) && rawGoal >= 1 && rawGoal <= MAX_GLASSES)
+        ? rawGoal
+        : (u.defaultGoal ?? 8);
 
+      // Plant always fixed to 1 weekly
+      if (u.cadence === "weekly") goal = 1;
+
+      goals[u.id] = goal;
       lastSuccess[u.id] = counts[u.id] >= goals[u.id];
     }
 
     function updateStatusAndTimeLeft() {
-      const now = new Date();
-      const minutes = now.getHours() * 60 + now.getMinutes();
+      const selected = getUser(selectedUserId);
+      if (selected.cadence === "weekly") {
+        statusPill.textContent = "Weekly mode";
+        statusPill.style.background = "#ecfdf5";
+        statusPill.style.color = "#065f46";
+        statusPill.style.borderColor = "#a7f3d0";
+        timeLeftEl.textContent = "Plant goal resets each week 🌿";
+        return;
+      }
+
+      const now2 = new Date();
+      const minutes = now2.getHours() * 60 + now2.getMinutes();
       const startMinutes = OFFICE_START_H * 60 + OFFICE_START_M;
       const endMinutes = OFFICE_END_H * 60 + OFFICE_END_M;
 
@@ -658,18 +680,14 @@
         const m = remaining % 60;
         const labelHours = h > 0 ? `${h}h` : "";
         const labelMinutes = m > 0 ? `${m}m` : h === 0 ? "0m" : "";
-        const name =
-          USERS.find((u) => u.id === selectedUserId)?.name || "you";
-        timeLeftEl.textContent = `${labelHours}${
-          labelHours && labelMinutes ? " " : ""
-        }${labelMinutes} left to reach ${name}'s goal today`;
+        const name = getUser(selectedUserId).name;
+        timeLeftEl.textContent = `${labelHours}${labelHours && labelMinutes ? " " : ""}${labelMinutes} left to reach ${name}'s goal today`;
       } else {
         statusPill.textContent = "Outside office hours";
         statusPill.style.background = "#fef3c7";
         statusPill.style.color = "#92400e";
         statusPill.style.borderColor = "#fed7aa";
-        timeLeftEl.textContent =
-          "Goal time is over for today. New streak starts tomorrow ✨";
+        timeLeftEl.textContent = "Goal time is over for today. New streak starts tomorrow ✨";
       }
     }
 
@@ -677,8 +695,7 @@
       userTabsEl.innerHTML = "";
       for (const u of USERS) {
         const btn = document.createElement("button");
-        btn.className =
-          "user-tab" + (u.id === selectedUserId ? " active" : "");
+        btn.className = "user-tab" + (u.id === selectedUserId ? " active" : "");
         btn.innerHTML = `<span class="emoji">${u.emoji}</span><span>${u.name}</span>`;
         btn.addEventListener("click", () => {
           if (selectedUserId !== u.id) {
@@ -692,56 +709,95 @@
       }
     }
 
+    function didMeetGoalFromObj(dayObj) {
+      if (!dayObj) return false;
+      if (dayObj.goal_met === true) return true;
+      const goal = dayObj.goal || 0;
+      const count = dayObj.glasses_count || 0;
+      return goal > 0 && count >= goal;
+    }
+
+    function computeStreak(userId) {
+      const user = getUser(userId);
+
+      if (user.cadence === "weekly") {
+        let streak = 0;
+        const thisWeek = weekKeyOffset(0);
+        const metThisWeek = didMeetGoalFromObj(history[userId]?.[thisWeek]);
+        const start = metThisWeek ? 0 : 1;
+
+        for (let w = start; w < start + 52; w++) {
+          const key = weekKeyOffset(-w);
+          const met = didMeetGoalFromObj(history[userId]?.[key]);
+          if (!met) break;
+          streak++;
+        }
+        return streak;
+      }
+
+      // daily
+      let streak = 0;
+      const todayLocal = dayKeyOffset(0);
+      const metToday = didMeetGoalFromObj(history[userId]?.[todayLocal]);
+      const start = metToday ? 0 : 1;
+
+      for (let d = start; d < start + 90; d++) {
+        const key = dayKeyOffset(-d);
+        const met = didMeetGoalFromObj(history[userId]?.[key]);
+        if (!met) break;
+        streak++;
+      }
+      return streak;
+    }
+
     function renderGlasses() {
+      const user = getUser(selectedUserId);
+      const periodKey = getPeriodKeyForUser(user, new Date());
       const count = counts[selectedUserId] || 0;
+
+      const max = user.cadence === "weekly" ? 1 : MAX_GLASSES;
+
       glassesRowEl.innerHTML = "";
-      for (let i = 1; i <= MAX_GLASSES; i++) {
+      for (let i = 1; i <= max; i++) {
         const btn = document.createElement("button");
         btn.className = "glass-btn";
-        btn.textContent = i <= count ? "💧" : "🥛";
+
+        const emptyIcon = user.cadence === "weekly" ? "🪴" : "🥛";
+        const fullIcon  = user.cadence === "weekly" ? "💧" : "💧";
+
+        btn.textContent = i <= count ? fullIcon : emptyIcon;
         if (i <= count) btn.classList.add("filled");
 
         btn.addEventListener("click", () => {
           const current = counts[selectedUserId] || 0;
 
-          // UNFILL: clicking the last filled glass -> just step back, no drop
+          // UNFILL: only if clicking last filled item
           if (i === current) {
-            const next = clamp(current - 1, 0, MAX_GLASSES);
+            const next = clamp(current - 1, 0, max);
             counts[selectedUserId] = next;
-            localStorage.setItem(
-              storageKeyCount(selectedUserId),
-              String(next)
-            );
+            localStorage.setItem(storageKeyCount(selectedUserId, periodKey), String(next));
             playClickSound();
             updateView();
             saveToCloud(selectedUserId).catch(console.error);
             return;
           }
 
-          // FILL: going up to this glass -> drop first, then fill
+          // FILL: drop first then fill
           const next = i;
-
           const rect = btn.getBoundingClientRect();
           const appRect = appEl.getBoundingClientRect();
 
-          // falling droplet
           const drop = document.createElement("span");
           drop.className = "glass-drop";
           drop.textContent = "💧";
-          drop.style.left =
-            rect.left - appRect.left + rect.width / 2 - 9 + "px";
-          drop.style.top =
-            rect.top - appRect.top - 6 + "px";
+          drop.style.left = (rect.left - appRect.left + rect.width / 2 - 9) + "px";
+          drop.style.top  = (rect.top - appRect.top - 6) + "px";
           appEl.appendChild(drop);
           setTimeout(() => drop.remove(), 400);
 
           setTimeout(() => {
             counts[selectedUserId] = next;
-            localStorage.setItem(
-              storageKeyCount(selectedUserId),
-              String(next)
-            );
-
+            localStorage.setItem(storageKeyCount(selectedUserId, periodKey), String(next));
             playClickSound();
             updateView();
 
@@ -759,56 +815,21 @@
       }
     }
 
-    function didMeetGoal(userId, dateKey) {
-  const day = history[userId]?.[dateKey];
-  if (!day) return false;
-
-  // If we've explicitly stored success, trust that
-  if (day.goal_met === true) return true;
-
-  const goal = day.goal || 0;
-  const count = day.glasses_count || 0;
-  return goal > 0 && count >= goal;
-}
-
-    // 🧠 New streak logic: count from yesterday if today isn't done yet
-    function computeStreak(userId) {
-      let streak = 0;
-      const todayKeyLocal = dateKeyForOffset(0);
-      let startOffset = 0;
-
-      const todayDay = history[userId]?.[todayKeyLocal];
-      if (!todayDay || !didMeetGoal(userId, todayKeyLocal)) {
-        // no data for today or goal not reached yet -> start from yesterday
-        startOffset = 1;
-      }
-
-      for (let offset = startOffset; offset < 30 + startOffset; offset++) {
-        const key = dateKeyForOffset(-offset);
-        const day = history[userId]?.[key];
-        if (!day) break;
-        if (didMeetGoal(userId, key)) {
-          streak++;
-        } else {
-          break;
-        }
-      }
-      return streak;
-    }
-
     function renderMeters() {
       metersListEl.innerHTML = "";
       for (const u of USERS) {
         const count = counts[u.id] || 0;
-        const goal = goals[u.id] || 8;
+        const goal  = goals[u.id] || (u.cadence === "weekly" ? 1 : 8);
         const ratio = goal > 0 ? count / goal : 0;
-        const pct = clamp(ratio * 100, 0, 100);
+        const pct   = clamp(ratio * 100, 0, 100);
         const success = goal > 0 && count >= goal;
         const streak = computeStreak(u.id);
 
         const card = document.createElement("div");
         card.className = "person-card";
-        card.title = `${u.name}: ${count}/${goal} glasses · ${streak}-day streak`;
+
+        const streakLabel = u.cadence === "weekly" ? "week streak" : "day streak";
+        card.title = `${u.name}: ${count}/${goal} · ${streak}-${streakLabel}`;
 
         const inner = document.createElement("div");
         inner.className = "person-inner";
@@ -822,7 +843,6 @@
         const nameEl = document.createElement("div");
         nameEl.className = "meter-name";
         nameEl.innerHTML = `<span class="emoji">${u.emoji}</span><span>${u.name}</span>`;
-
         topRow.appendChild(nameEl);
 
         const bar = document.createElement("div");
@@ -837,11 +857,12 @@
 
         const text = document.createElement("div");
         text.className = "meter-text";
-        text.textContent = `${count}/${goal} glasses`;
+        const unit = u.cadence === "weekly" ? "this week" : "today";
+        text.textContent = `${count}/${goal} · ${unit}`;
 
         const msg = document.createElement("div");
         msg.className = "meter-message";
-        msg.textContent = getEncouragement(count, goal);
+        msg.textContent = getEncouragement(count, goal, u);
 
         left.appendChild(topRow);
         left.appendChild(bar);
@@ -853,18 +874,21 @@
 
         const streakMain = document.createElement("div");
         streakMain.className = "streak-main";
+
         const num = document.createElement("div");
         num.className = "streak-number";
         num.textContent = streak;
+
         const fire = document.createElement("div");
         fire.className = "streak-fire";
         fire.textContent = "🔥";
+
         streakMain.appendChild(num);
         streakMain.appendChild(fire);
 
         const label = document.createElement("div");
         label.className = "streak-label";
-        label.textContent = "day streak";
+        label.textContent = u.cadence === "weekly" ? "week streak" : "day streak";
 
         right.appendChild(streakMain);
         right.appendChild(label);
@@ -872,27 +896,42 @@
         inner.appendChild(left);
         inner.appendChild(right);
         card.appendChild(inner);
+
         metersListEl.appendChild(card);
       }
     }
 
     function checkGoalCelebration() {
-      const userId = selectedUserId;
-      const count = counts[userId] || 0;
-      const goal = goals[userId] || 8;
+      const user = getUser(selectedUserId);
+      const count = counts[user.id] || 0;
+      const goal = goals[user.id] || (user.cadence === "weekly" ? 1 : 8);
       const success = goal > 0 && count >= goal;
 
-      if (!lastSuccess[userId] && success) {
+      if (!lastSuccess[user.id] && success) {
         launchConfetti();
         playGoalSound();
       }
+      lastSuccess[user.id] = success;
+    }
 
-      lastSuccess[userId] = success;
+    function updateGoalUI() {
+      const user = getUser(selectedUserId);
+
+      if (user.cadence === "weekly") {
+        goalLabelEl.textContent = "Weekly goal for this person";
+        goalUnitEl.textContent = "time";
+        goalInputEl.value = "1";
+        goalInputEl.disabled = true;
+      } else {
+        goalLabelEl.textContent = "Daily goal for this person";
+        goalUnitEl.textContent = "glasses";
+        goalInputEl.disabled = false;
+        goalInputEl.value = goals[selectedUserId] || 8;
+      }
     }
 
     function updateView() {
-      const goal = goals[selectedUserId] || 8;
-      goalInputEl.value = goal;
+      updateGoalUI();
       renderGlasses();
       renderMeters();
       checkGoalCelebration();
@@ -900,68 +939,76 @@
     }
 
     async function saveToCloud(userId) {
-  const user = USERS.find((u) => u.id === userId);
-  if (!user) return;
+      const user = getUser(userId);
+      const periodKey = getPeriodKeyForUser(user, new Date());
 
-  const count = counts[userId] || 0;
-  const goal = goals[userId] || 8;
-  const goalMet = goal > 0 && count >= goal;
+      const max = user.cadence === "weekly" ? 1 : MAX_GLASSES;
+      const count = clamp(counts[userId] || 0, 0, max);
 
-  const id = `${todayKey}_${userId}`;
-  const ref = doc(db, "groups", GROUP_ID, "entries", id);
-  await setDoc(
-    ref,
-    {
-      groupId: GROUP_ID,
-      date: todayKey,
-      user_id: userId,
-      name: user.name,
-      glasses_count: count,
-      goal,
-      goal_met: goalMet,        // 👈 NEW
-      updated_at: new Date().toISOString(),
-    },
-    { merge: true }
-  );
-}
+      const goal = user.cadence === "weekly" ? 1 : (goals[userId] || 8);
+      const goalMet = goal > 0 && count >= goal;
+
+      const id = `${periodKey}_${userId}`;
+      const ref = doc(db, "groups", GROUP_ID, "entries", id);
+
+      await setDoc(ref, {
+        groupId: GROUP_ID,
+        period: user.cadence,         // "daily" | "weekly"
+        period_key: periodKey,        // "YYYY-MM-DD" or "YYYY-W##"
+        date: todayKey,               // keep for compatibility/debug
+        user_id: userId,
+        name: user.name,
+        glasses_count: count,
+        goal,
+        goal_met: goalMet,
+        updated_at: new Date().toISOString(),
+      }, { merge: true });
+    }
 
     function startFriendsListener() {
       const entriesCol = collection(db, "groups", GROUP_ID, "entries");
       const qAll = query(entriesCol);
+
       onSnapshot(qAll, (snapshot) => {
-        for (const u of USERS) {
-          history[u.id] = history[u.id] || {};
-        }
+        for (const u of USERS) history[u.id] = history[u.id] || {};
 
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
           const userId = data.user_id;
-          const dateKey = data.date;
-          if (!userId || !dateKey) return;
-          if (!history[userId]) history[userId] = {};
-          const day = history[userId][dateKey] || {};
+          if (!userId) return;
+
+          const user = USERS.find(u => u.id === userId);
+          if (!user) return;
+
+          // prefer new field, fall back to old 'date'
+          const key = data.period_key || data.date;
+          if (!key) return;
+
+          const day = history[userId][key] || {};
+
           if (typeof data.glasses_count === "number") {
-            day.glasses_count = clamp(data.glasses_count, 0, MAX_GLASSES);
+            const max = user.cadence === "weekly" ? 1 : MAX_GLASSES;
+            day.glasses_count = clamp(data.glasses_count, 0, max);
           }
           if (typeof data.goal === "number") {
-            day.goal = clamp(data.goal, 1, MAX_GLASSES);
+            day.goal = user.cadence === "weekly" ? 1 : clamp(data.goal, 1, MAX_GLASSES);
           }
-          history[userId][dateKey] = day;
+          if (typeof data.goal_met === "boolean") {
+            day.goal_met = data.goal_met;
+          }
 
-          if (dateKey === todayKey) {
+          history[userId][key] = day;
+
+          // update live counters only if this entry matches the CURRENT period key
+          const currentKey = getPeriodKeyForUser(user, new Date());
+          if (key === currentKey) {
             if (typeof day.glasses_count === "number") {
               counts[userId] = day.glasses_count;
-              localStorage.setItem(
-                storageKeyCount(userId),
-                String(day.glasses_count)
-              );
+              localStorage.setItem(storageKeyCount(userId, currentKey), String(day.glasses_count));
             }
-            if (typeof day.goal === "number") {
+            if (typeof day.goal === "number" && user.cadence !== "weekly") {
               goals[userId] = day.goal;
-              localStorage.setItem(
-                storageKeyGoal(userId),
-                String(day.goal)
-              );
+              localStorage.setItem(storageKeyGoal(userId), String(day.goal));
             }
           }
         });
@@ -971,19 +1018,20 @@
     }
 
     goalInputEl.addEventListener("change", () => {
+      const user = getUser(selectedUserId);
+      if (user.cadence === "weekly") return; // plant goal fixed
+
       let val = Number(goalInputEl.value);
       if (!Number.isFinite(val)) val = goals[selectedUserId] || 8;
       val = clamp(val, 1, MAX_GLASSES);
+
       goals[selectedUserId] = val;
-      localStorage.setItem(
-        storageKeyGoal(selectedUserId),
-        String(val)
-      );
+      localStorage.setItem(storageKeyGoal(selectedUserId), String(val));
       updateView();
       saveToCloud(selectedUserId).catch(console.error);
     });
 
-    dateEl.textContent = formatDatePretty(today);
+    dateEl.textContent = formatDatePretty(now);
     renderUserTabs();
     updateView();
     updateStatusAndTimeLeft();

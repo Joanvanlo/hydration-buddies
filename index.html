@@ -111,28 +111,28 @@
     .sound-toggle-label { user-select: none; }
 
     .user-tabs {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin: 10px 0 16px;
-}
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 10px 0 16px;
+    }
 
-.user-tab {
-  width: 100%;
-  padding: 6px 0;
-  border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-  font-size: 12px;
-  background: #f9fafb;
-  color: #4b5563;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  transition: background 0.15s ease, color 0.15s ease,
-    border-color 0.15s ease, transform 0.08s ease;
-}
+    .user-tab {
+      width: 100%;
+      padding: 6px 0;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 12px;
+      background: #f9fafb;
+      color: #4b5563;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s ease, color 0.15s ease,
+        border-color 0.15s ease, transform 0.08s ease;
+    }
 
     .user-tab span.emoji { font-size: 14px; }
 
@@ -446,9 +446,9 @@
 
     const USERS = [
       { id: "joan",  name: "Joan",  emoji: "🧝‍♀️", cadence: "daily",  defaultGoal: 8 },
-      { id: "loes",  name: "Loes",  emoji: "🐱",    cadence: "daily",  defaultGoal: 8 },
-      { id: "john",  name: "John",  emoji: "💪",    cadence: "daily",  defaultGoal: 8 },
-      { id: "plant", name: "Perry", emoji: "🌿",    cadence: "weekly", defaultGoal: 1 },
+      { id: "loes",  name: "Loes",  emoji: "🐱",   cadence: "daily",  defaultGoal: 8 },
+      { id: "john",  name: "John",  emoji: "💪",   cadence: "daily",  defaultGoal: 8 },
+      { id: "plant", name: "Perry", emoji: "🌿",   cadence: "weekly", defaultGoal: 1 },
     ];
 
     const MAX_GLASSES = 15;
@@ -492,16 +492,20 @@
       return d.toISOString().slice(0, 10); // YYYY-MM-DD
     }
 
+    function isWeekendKey(dateKey) {
+      const d = new Date(dateKey + "T00:00:00");
+      const day = d.getDay(); // 0=Sun, 6=Sat
+      return day === 0 || day === 6;
+    }
+
     // ISO-ish week key: YYYY-Www
     function toWeekKey(d) {
       const date = new Date(d);
       date.setHours(0, 0, 0, 0);
 
-      // Thursday in current week decides the year
       date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
       const weekYear = date.getFullYear();
 
-      // Week 1 is the week with Jan 4th
       const week1 = new Date(weekYear, 0, 4);
       const week1Day = (week1.getDay() + 6) % 7;
       week1.setDate(week1.getDate() - week1Day);
@@ -550,7 +554,6 @@
     const lastDate = localStorage.getItem(LAST_DATE_STORAGE_KEY);
     if (lastDate && lastDate !== todayKey) {
       Object.keys(localStorage).forEach((k) => {
-        // delete daily count keys (YYYY-MM-DD), keep weekly keys (contain "-W")
         if (k.startsWith(STORAGE_PREFIX + "count_") && !k.includes("-W")) {
           localStorage.removeItem(k);
         }
@@ -558,7 +561,6 @@
     }
     localStorage.setItem(LAST_DATE_STORAGE_KEY, todayKey);
 
-    // --- Encouragement ---
     function getEncouragement(count, goal, user) {
       if (user.cadence === "weekly") {
         return count >= goal ? "Plant is thriving 🌿✨" : "Water me once this week pls 🙏";
@@ -646,15 +648,15 @@
         ? rawGoal
         : (u.defaultGoal ?? 8);
 
-      // Plant always fixed to 1 weekly
       if (u.cadence === "weekly") goal = 1;
-
       goals[u.id] = goal;
+
       lastSuccess[u.id] = counts[u.id] >= goals[u.id];
     }
 
     function updateStatusAndTimeLeft() {
       const selected = getUser(selectedUserId);
+
       if (selected.cadence === "weekly") {
         statusPill.textContent = "Weekly mode";
         statusPill.style.background = "#ecfdf5";
@@ -681,6 +683,7 @@
         const labelHours = h > 0 ? `${h}h` : "";
         const labelMinutes = m > 0 ? `${m}m` : h === 0 ? "0m" : "";
         const name = getUser(selectedUserId).name;
+
         timeLeftEl.textContent = `${labelHours}${labelHours && labelMinutes ? " " : ""}${labelMinutes} left to reach ${name}'s goal today`;
       } else {
         statusPill.textContent = "Outside office hours";
@@ -717,38 +720,68 @@
       return goal > 0 && count >= goal;
     }
 
+    // ✅ FIXED computeStreak() (this was breaking your whole widget)
     function computeStreak(userId) {
-      const user = getUser(userId);
+  const user = getUser(userId);
+  const entries = history[userId] || {};
 
-      if (user.cadence === "weekly") {
-        let streak = 0;
-        const thisWeek = weekKeyOffset(0);
-        const metThisWeek = didMeetGoalFromObj(history[userId]?.[thisWeek]);
-        const start = metThisWeek ? 0 : 1;
+  // 🌿 Weekly streak (plant): only count consecutive successful WEEKS,
+  // but ignore the current week if it’s not met yet.
+  if (user.cadence === "weekly") {
+    const weekKeys = Object.keys(entries)
+      .filter(k => /^\d{4}-W\d{2}$/.test(k))
+      .sort((a, b) => b.localeCompare(a)); // newest -> oldest
 
-        for (let w = start; w < start + 52; w++) {
-          const key = weekKeyOffset(-w);
-          const met = didMeetGoalFromObj(history[userId]?.[key]);
-          if (!met) break;
-          streak++;
-        }
-        return streak;
+    let streak = 0;
+    let started = false;
+
+    for (const k of weekKeys) {
+      const met = didMeetGoalFromObj(entries[k]);
+
+      // Ignore leading "not met yet" weeks (e.g., current week still in progress)
+      if (!started) {
+        if (!met) continue;
+        started = true;
+        streak = 1;
+        continue;
       }
 
-      // daily
-      let streak = 0;
-      const todayLocal = dayKeyOffset(0);
-      const metToday = didMeetGoalFromObj(history[userId]?.[todayLocal]);
-      const start = metToday ? 0 : 1;
-
-      for (let d = start; d < start + 90; d++) {
-        const key = dayKeyOffset(-d);
-        const met = didMeetGoalFromObj(history[userId]?.[key]);
-        if (!met) break;
-        streak++;
-      }
-      return streak;
+      // After we started: met continues, first failure stops
+      if (met) streak++;
+      else break;
     }
+
+    return streak;
+  }
+
+  // 👤 Daily streak: only count consecutive successful LOGGED workdays,
+  // ignore weekends + ignore the newest day if it’s not met yet.
+  const dayKeys = Object.keys(entries)
+    .filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k))
+    .filter(k => !isWeekendKey(k))
+    .sort((a, b) => b.localeCompare(a)); // newest -> oldest
+
+  let streak = 0;
+  let started = false;
+
+  for (const k of dayKeys) {
+    const met = didMeetGoalFromObj(entries[k]);
+
+    // Ignore leading "not met yet" days (e.g., today before goal is hit)
+    if (!started) {
+      if (!met) continue;
+      started = true;
+      streak = 1;
+      continue;
+    }
+
+    // After we started: met continues, first failure stops
+    if (met) streak++;
+    else break;
+  }
+
+  return streak;
+}
 
     function renderGlasses() {
       const user = getUser(selectedUserId);
@@ -763,7 +796,7 @@
         btn.className = "glass-btn";
 
         const emptyIcon = user.cadence === "weekly" ? "🪴" : "🥛";
-        const fullIcon  = user.cadence === "weekly" ? "💧" : "💧";
+        const fullIcon  = "💧";
 
         btn.textContent = i <= count ? fullIcon : emptyIcon;
         if (i <= count) btn.classList.add("filled");
@@ -771,7 +804,7 @@
         btn.addEventListener("click", () => {
           const current = counts[selectedUserId] || 0;
 
-          // UNFILL: only if clicking last filled item
+          // UNFILL: clicking last filled item
           if (i === current) {
             const next = clamp(current - 1, 0, max);
             counts[selectedUserId] = next;
@@ -784,6 +817,7 @@
 
           // FILL: drop first then fill
           const next = i;
+
           const rect = btn.getBoundingClientRect();
           const appRect = appEl.getBoundingClientRect();
 
@@ -828,7 +862,7 @@
         const card = document.createElement("div");
         card.className = "person-card";
 
-        const streakLabel = u.cadence === "weekly" ? "week streak" : "day streak";
+        const streakLabel = u.cadence === "weekly" ? "week streak" : "workday streak";
         card.title = `${u.name}: ${count}/${goal} · ${streak}-${streakLabel}`;
 
         const inner = document.createElement("div");
@@ -888,7 +922,7 @@
 
         const label = document.createElement("div");
         label.className = "streak-label";
-        label.textContent = u.cadence === "weekly" ? "week streak" : "day streak";
+        label.textContent = streakLabel;
 
         right.appendChild(streakMain);
         right.appendChild(label);
@@ -953,9 +987,9 @@
 
       await setDoc(ref, {
         groupId: GROUP_ID,
-        period: user.cadence,         // "daily" | "weekly"
-        period_key: periodKey,        // "YYYY-MM-DD" or "YYYY-W##"
-        date: todayKey,               // keep for compatibility/debug
+        period: user.cadence,
+        period_key: periodKey,
+        date: todayKey, // compatibility/debug
         user_id: userId,
         name: user.name,
         glasses_count: count,
@@ -980,7 +1014,6 @@
           const user = USERS.find(u => u.id === userId);
           if (!user) return;
 
-          // prefer new field, fall back to old 'date'
           const key = data.period_key || data.date;
           if (!key) return;
 
@@ -999,7 +1032,6 @@
 
           history[userId][key] = day;
 
-          // update live counters only if this entry matches the CURRENT period key
           const currentKey = getPeriodKeyForUser(user, new Date());
           if (key === currentKey) {
             if (typeof day.glasses_count === "number") {
@@ -1019,7 +1051,7 @@
 
     goalInputEl.addEventListener("change", () => {
       const user = getUser(selectedUserId);
-      if (user.cadence === "weekly") return; // plant goal fixed
+      if (user.cadence === "weekly") return;
 
       let val = Number(goalInputEl.value);
       if (!Number.isFinite(val)) val = goals[selectedUserId] || 8;

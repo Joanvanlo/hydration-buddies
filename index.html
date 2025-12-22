@@ -13,6 +13,12 @@
       --text-muted: #6b7280;
       --shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
       --border-dashed: rgba(148, 163, 184, 0.5);
+
+      /* Vacation palette */
+      --vac-bg: #f6e7c8;          /* sandy beige */
+      --vac-text: #7a5a2a;        /* darker sand */
+      --vac-muted: rgba(122,90,42,0.75);
+      --vac-border: rgba(122,90,42,0.18);
     }
 
     * {
@@ -110,6 +116,7 @@
     .sound-toggle input:checked + .sound-toggle-pill .sound-toggle-knob { transform: translateX(14px); }
     .sound-toggle-label { user-select: none; }
 
+    /* 2x2 tabs */
     .user-tabs {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -144,39 +151,62 @@
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
     }
 
+    /* Goal + Work status row (2 columns) */
     .goal-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
       margin: 12px 0 16px;
       font-size: 12px;
       color: var(--text-muted);
+      align-items: start;
     }
 
-    .goal-row span.label {
-      font-weight: 500;
+    .goal-box, .status-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .goal-label, .status-label {
+      font-weight: 600;
       color: var(--text-main);
+      font-size: 12px;
+    }
+
+    .goal-input,
+    .status-select {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      padding: 8px 10px;
+      font-size: 12px;
+      outline: none;
+      background: #fff;
     }
 
     .goal-input {
-      width: 56px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      padding: 4px 8px;
-      font-size: 12px;
       text-align: center;
-      outline: none;
     }
 
-    .goal-input:focus {
+    .goal-input:focus,
+    .status-select:focus {
       border-color: #4c6fff;
       box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
     }
 
-    .goal-input[disabled] {
+    .goal-input[disabled],
+    .status-select[disabled] {
       background: #f3f4f6;
       color: #6b7280;
       cursor: not-allowed;
+    }
+
+    .goal-subline {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: -2px;
+      text-align: center;
     }
 
     .glasses-row {
@@ -257,6 +287,24 @@
       border: 1px solid rgba(148, 163, 184, 0.18);
     }
 
+    /* Vacation styling */
+    .person-card.vacation {
+      background: var(--vac-bg);
+      border-color: var(--vac-border);
+    }
+    .person-card.vacation .meter-name,
+    .person-card.vacation .streak-number {
+      color: var(--vac-text);
+    }
+    .person-card.vacation .meter-text,
+    .person-card.vacation .meter-message,
+    .person-card.vacation .streak-label {
+      color: var(--vac-muted);
+    }
+    .person-card.vacation .person-right {
+      border-left-color: rgba(122,90,42,0.28);
+    }
+
     .person-inner { display: flex; align-items: stretch; gap: 10px; }
 
     .person-left {
@@ -288,7 +336,7 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text-main);
     }
 
@@ -333,7 +381,7 @@
       font-size: 18px;
       line-height: 1.1;
       color: var(--text-main);
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .streak-fire { font-size: 16px; line-height: 1.1; }
@@ -397,11 +445,19 @@
     <div class="user-tabs" id="user-tabs"></div>
 
     <div class="goal-row">
-      <span class="label" id="goal-label">Daily goal for this person</span>
-      <span>
+      <div class="goal-box">
+        <div class="goal-label" id="goal-label">Daily goal for this person</div>
         <input id="goal-input" class="goal-input" type="number" min="1" max="15" />
-        <span id="goal-unit" style="font-size:11px;color:var(--text-muted);">glasses</span>
-      </span>
+        <div class="goal-subline" id="goal-unit">glasses</div>
+      </div>
+
+      <div class="status-box">
+        <div class="status-label">Work status</div>
+        <select id="status-select" class="status-select">
+          <option value="working">Working</option>
+          <option value="vacation">Vacationing</option>
+        </select>
+      </div>
     </div>
 
     <div class="glasses-row" id="glasses-row"></div>
@@ -457,7 +513,7 @@
     const OFFICE_END_H = 17;
     const OFFICE_END_M = 30;
 
-    const STORAGE_PREFIX = "waterTracker_v12_";
+    const STORAGE_PREFIX = "waterTracker_v13_";
 
     const now = new Date();
     const todayKey = now.toISOString().slice(0, 10);
@@ -472,6 +528,7 @@
     const timeLeftEl = document.getElementById("time-left");
     const metersListEl = document.getElementById("meters-list");
     const soundToggleInput = document.getElementById("sound-toggle-input");
+    const statusSelectEl = document.getElementById("status-select");
     const appEl = document.querySelector(".app");
 
     function clamp(val, min, max) {
@@ -487,22 +544,19 @@
       });
     }
 
-    // --- Period keys (daily vs weekly) ---
     function toDateKey(d) {
-      return d.toISOString().slice(0, 10); // YYYY-MM-DD
+      return d.toISOString().slice(0, 10);
     }
 
     function isWeekendKey(dateKey) {
       const d = new Date(dateKey + "T00:00:00");
-      const day = d.getDay(); // 0=Sun, 6=Sat
+      const day = d.getDay();
       return day === 0 || day === 6;
     }
 
-    // ISO-ish week key: YYYY-Www
     function toWeekKey(d) {
       const date = new Date(d);
       date.setHours(0, 0, 0, 0);
-
       date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
       const weekYear = date.getFullYear();
 
@@ -513,14 +567,6 @@
       const diffDays = Math.round((date - week1) / 86400000);
       const week = 1 + Math.floor(diffDays / 7);
       return `${weekYear}-W${String(week).padStart(2, "0")}`;
-    }
-
-    function getUser(userId) {
-      return USERS.find(u => u.id === userId) || USERS[0];
-    }
-
-    function getPeriodKeyForUser(user, d = new Date()) {
-      return user.cadence === "weekly" ? toWeekKey(d) : toDateKey(d);
     }
 
     function dayKeyOffset(offsetDays) {
@@ -535,7 +581,14 @@
       return toWeekKey(d);
     }
 
-    // --- Storage keys ---
+    function getUser(userId) {
+      return USERS.find(u => u.id === userId) || USERS[0];
+    }
+
+    function getPeriodKeyForUser(user, d = new Date()) {
+      return user.cadence === "weekly" ? toWeekKey(d) : toDateKey(d);
+    }
+
     function storageKeyCount(userId, periodKey) {
       return `${STORAGE_PREFIX}count_${periodKey}_${userId}`;
     }
@@ -549,7 +602,7 @@
       return `${STORAGE_PREFIX}sounds`;
     }
 
-    // 🔁 Daily reset for daily users only (weekly plant keys are not cleared)
+    // Daily reset for daily users only (weekly stays)
     const LAST_DATE_STORAGE_KEY = STORAGE_PREFIX + "lastDateKey";
     const lastDate = localStorage.getItem(LAST_DATE_STORAGE_KEY);
     if (lastDate && lastDate !== todayKey) {
@@ -571,7 +624,7 @@
       return "Goal reached, hydration hero 💪";
     }
 
-    // --- Sound toggle ---
+    // Sounds
     let soundsEnabled = localStorage.getItem(storageKeySounds()) !== "off";
     soundToggleInput.checked = soundsEnabled;
     soundToggleInput.addEventListener("change", () => {
@@ -627,19 +680,25 @@
       }
     }
 
-    // --- State ---
-    let selectedUserId =
-      localStorage.getItem(storageKeySelectedUser()) || USERS[0].id;
+    // State
+    let selectedUserId = localStorage.getItem(storageKeySelectedUser()) || USERS[0].id;
 
     const counts = {};
     const goals = {};
     const history = {};
     const lastSuccess = {};
 
+    // Work status profiles (synced via Firestore)
+    // { [userId]: { status: "working"|"vacation", frozen_streak?: number, frozen_at?: string } }
+    const profiles = {};
+    function isVacationing(userId) {
+      return profiles[userId]?.status === "vacation";
+    }
+
     for (const u of USERS) {
       history[u.id] = {};
-
       const periodKey = getPeriodKeyForUser(u, now);
+
       const rawCount = Number(localStorage.getItem(storageKeyCount(u.id, periodKey)));
       counts[u.id] = Number.isFinite(rawCount) && rawCount >= 0 ? rawCount : 0;
 
@@ -652,6 +711,76 @@
       goals[u.id] = goal;
 
       lastSuccess[u.id] = counts[u.id] >= goals[u.id];
+
+      profiles[u.id] = profiles[u.id] || { status: "working" };
+    }
+
+    function didMeetGoalFromObj(dayObj) {
+      if (!dayObj) return false;
+      if (dayObj.goal_met === true) return true;
+      const goal = dayObj.goal || 0;
+      const count = dayObj.glasses_count || 0;
+      return goal > 0 && count >= goal;
+    }
+
+    // Helper: compute streak normally (ignores "today not met yet" by skipping leading not-met)
+    function computeStreakBase(userId) {
+      const user = getUser(userId);
+      const entries = history[userId] || {};
+
+      if (user.cadence === "weekly") {
+        const weekKeys = Object.keys(entries)
+          .filter(k => /^\d{4}-W\d{2}$/.test(k))
+          .sort((a, b) => b.localeCompare(a));
+
+        let streak = 0;
+        let started = false;
+
+        for (const k of weekKeys) {
+          const met = didMeetGoalFromObj(entries[k]);
+          if (!started) {
+            if (!met) continue;
+            started = true;
+            streak = 1;
+            continue;
+          }
+          if (met) streak++;
+          else break;
+        }
+        return streak;
+      }
+
+      const dayKeys = Object.keys(entries)
+        .filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k))
+        .filter(k => !isWeekendKey(k))
+        .sort((a, b) => b.localeCompare(a));
+
+      let streak = 0;
+      let started = false;
+
+      for (const k of dayKeys) {
+        const met = didMeetGoalFromObj(entries[k]);
+        if (!started) {
+          if (!met) continue;
+          started = true;
+          streak = 1;
+          continue;
+        }
+        if (met) streak++;
+        else break;
+      }
+      return streak;
+    }
+
+    // ✅ Vacation-aware streak:
+    // - if vacationing: show frozen streak
+    // - else: compute normally
+    function computeStreak(userId) {
+      if (isVacationing(userId)) {
+        const frozen = profiles[userId]?.frozen_streak;
+        return Number.isFinite(frozen) ? frozen : computeStreakBase(userId);
+      }
+      return computeStreakBase(userId);
     }
 
     function updateStatusAndTimeLeft() {
@@ -683,7 +812,6 @@
         const labelHours = h > 0 ? `${h}h` : "";
         const labelMinutes = m > 0 ? `${m}m` : h === 0 ? "0m" : "";
         const name = getUser(selectedUserId).name;
-
         timeLeftEl.textContent = `${labelHours}${labelHours && labelMinutes ? " " : ""}${labelMinutes} left to reach ${name}'s goal today`;
       } else {
         statusPill.textContent = "Outside office hours";
@@ -699,7 +827,8 @@
       for (const u of USERS) {
         const btn = document.createElement("button");
         btn.className = "user-tab" + (u.id === selectedUserId ? " active" : "");
-        btn.innerHTML = `<span class="emoji">${u.emoji}</span><span>${u.name}</span>`;
+        const emoji = isVacationing(u.id) ? "🏝️" : u.emoji;
+        btn.innerHTML = `<span class="emoji">${emoji}</span><span>${u.name}</span>`;
         btn.addEventListener("click", () => {
           if (selectedUserId !== u.id) {
             selectedUserId = u.id;
@@ -712,77 +841,6 @@
       }
     }
 
-    function didMeetGoalFromObj(dayObj) {
-      if (!dayObj) return false;
-      if (dayObj.goal_met === true) return true;
-      const goal = dayObj.goal || 0;
-      const count = dayObj.glasses_count || 0;
-      return goal > 0 && count >= goal;
-    }
-
-    // ✅ FIXED computeStreak() (this was breaking your whole widget)
-    function computeStreak(userId) {
-  const user = getUser(userId);
-  const entries = history[userId] || {};
-
-  // 🌿 Weekly streak (plant): only count consecutive successful WEEKS,
-  // but ignore the current week if it’s not met yet.
-  if (user.cadence === "weekly") {
-    const weekKeys = Object.keys(entries)
-      .filter(k => /^\d{4}-W\d{2}$/.test(k))
-      .sort((a, b) => b.localeCompare(a)); // newest -> oldest
-
-    let streak = 0;
-    let started = false;
-
-    for (const k of weekKeys) {
-      const met = didMeetGoalFromObj(entries[k]);
-
-      // Ignore leading "not met yet" weeks (e.g., current week still in progress)
-      if (!started) {
-        if (!met) continue;
-        started = true;
-        streak = 1;
-        continue;
-      }
-
-      // After we started: met continues, first failure stops
-      if (met) streak++;
-      else break;
-    }
-
-    return streak;
-  }
-
-  // 👤 Daily streak: only count consecutive successful LOGGED workdays,
-  // ignore weekends + ignore the newest day if it’s not met yet.
-  const dayKeys = Object.keys(entries)
-    .filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k))
-    .filter(k => !isWeekendKey(k))
-    .sort((a, b) => b.localeCompare(a)); // newest -> oldest
-
-  let streak = 0;
-  let started = false;
-
-  for (const k of dayKeys) {
-    const met = didMeetGoalFromObj(entries[k]);
-
-    // Ignore leading "not met yet" days (e.g., today before goal is hit)
-    if (!started) {
-      if (!met) continue;
-      started = true;
-      streak = 1;
-      continue;
-    }
-
-    // After we started: met continues, first failure stops
-    if (met) streak++;
-    else break;
-  }
-
-  return streak;
-}
-
     function renderGlasses() {
       const user = getUser(selectedUserId);
       const periodKey = getPeriodKeyForUser(user, new Date());
@@ -790,13 +848,14 @@
 
       const max = user.cadence === "weekly" ? 1 : MAX_GLASSES;
 
+      const onVacation = isVacationing(selectedUserId);
+      const emptyIcon = user.cadence === "weekly" ? "🪴" : (onVacation ? "🍹" : "🥛");
+      const fullIcon  = "💧";
+
       glassesRowEl.innerHTML = "";
       for (let i = 1; i <= max; i++) {
         const btn = document.createElement("button");
         btn.className = "glass-btn";
-
-        const emptyIcon = user.cadence === "weekly" ? "🪴" : "🥛";
-        const fullIcon  = "💧";
 
         btn.textContent = i <= count ? fullIcon : emptyIcon;
         if (i <= count) btn.classList.add("filled");
@@ -804,7 +863,6 @@
         btn.addEventListener("click", () => {
           const current = counts[selectedUserId] || 0;
 
-          // UNFILL: clicking last filled item
           if (i === current) {
             const next = clamp(current - 1, 0, max);
             counts[selectedUserId] = next;
@@ -815,7 +873,6 @@
             return;
           }
 
-          // FILL: drop first then fill
           const next = i;
 
           const rect = btn.getBoundingClientRect();
@@ -857,10 +914,11 @@
         const ratio = goal > 0 ? count / goal : 0;
         const pct   = clamp(ratio * 100, 0, 100);
         const success = goal > 0 && count >= goal;
+
         const streak = computeStreak(u.id);
 
         const card = document.createElement("div");
-        card.className = "person-card";
+        card.className = "person-card" + (isVacationing(u.id) ? " vacation" : "");
 
         const streakLabel = u.cadence === "weekly" ? "week streak" : "workday streak";
         card.title = `${u.name}: ${count}/${goal} · ${streak}-${streakLabel}`;
@@ -876,7 +934,9 @@
 
         const nameEl = document.createElement("div");
         nameEl.className = "meter-name";
-        nameEl.innerHTML = `<span class="emoji">${u.emoji}</span><span>${u.name}</span>`;
+
+        const emoji = isVacationing(u.id) ? "🏝️" : u.emoji;
+        nameEl.innerHTML = `<span class="emoji">${emoji}</span><span>${u.name}</span>`;
         topRow.appendChild(nameEl);
 
         const bar = document.createElement("div");
@@ -896,7 +956,9 @@
 
         const msg = document.createElement("div");
         msg.className = "meter-message";
-        msg.textContent = getEncouragement(count, goal, u);
+        msg.textContent = isVacationing(u.id)
+          ? "Vacation mode: streak frozen 😎"
+          : getEncouragement(count, goal, u);
 
         left.appendChild(topRow);
         left.appendChild(bar);
@@ -956,11 +1018,17 @@
         goalUnitEl.textContent = "time";
         goalInputEl.value = "1";
         goalInputEl.disabled = true;
+
+        statusSelectEl.value = "working";
+        statusSelectEl.disabled = true;
       } else {
         goalLabelEl.textContent = "Daily goal for this person";
         goalUnitEl.textContent = "glasses";
         goalInputEl.disabled = false;
         goalInputEl.value = goals[selectedUserId] || 8;
+
+        statusSelectEl.disabled = false;
+        statusSelectEl.value = isVacationing(selectedUserId) ? "vacation" : "working";
       }
     }
 
@@ -970,6 +1038,7 @@
       renderMeters();
       checkGoalCelebration();
       updateStatusAndTimeLeft();
+      renderUserTabs();
     }
 
     async function saveToCloud(userId) {
@@ -989,7 +1058,7 @@
         groupId: GROUP_ID,
         period: user.cadence,
         period_key: periodKey,
-        date: todayKey, // compatibility/debug
+        date: todayKey,
         user_id: userId,
         name: user.name,
         glasses_count: count,
@@ -999,7 +1068,46 @@
       }, { merge: true });
     }
 
-    function startFriendsListener() {
+    async function saveProfile(userId) {
+      const p = profiles[userId] || { status: "working" };
+      const ref = doc(db, "groups", GROUP_ID, "profiles", userId);
+      await setDoc(ref, {
+        user_id: userId,
+        status: p.status || "working",
+        frozen_streak: p.frozen_streak ?? null,
+        frozen_at: p.frozen_at ?? null,
+        updated_at: new Date().toISOString(),
+      }, { merge: true });
+    }
+
+    function startProfilesListener() {
+      const profilesCol = collection(db, "groups", GROUP_ID, "profiles");
+      const qAll = query(profilesCol);
+
+      onSnapshot(qAll, (snapshot) => {
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const userId = data.user_id || docSnap.id;
+          if (!userId) return;
+
+          profiles[userId] = profiles[userId] || { status: "working" };
+          if (typeof data.status === "string") profiles[userId].status = data.status;
+          if (typeof data.frozen_streak === "number") profiles[userId].frozen_streak = data.frozen_streak;
+          if (typeof data.frozen_at === "string") profiles[userId].frozen_at = data.frozen_at;
+
+          if (data.frozen_streak === null || data.frozen_streak === undefined) {
+            delete profiles[userId].frozen_streak;
+          }
+          if (data.frozen_at === null || data.frozen_at === undefined) {
+            delete profiles[userId].frozen_at;
+          }
+        });
+
+        updateView();
+      });
+    }
+
+    function startEntriesListener() {
       const entriesCol = collection(db, "groups", GROUP_ID, "entries");
       const qAll = query(entriesCol);
 
@@ -1049,6 +1157,7 @@
       });
     }
 
+    // Goal change
     goalInputEl.addEventListener("change", () => {
       const user = getUser(selectedUserId);
       if (user.cadence === "weekly") return;
@@ -1063,12 +1172,38 @@
       saveToCloud(selectedUserId).catch(console.error);
     });
 
+    // Work status change (Vacation mode)
+    statusSelectEl.addEventListener("change", () => {
+      const user = getUser(selectedUserId);
+      if (user.cadence === "weekly") return;
+
+      const next = statusSelectEl.value === "vacation" ? "vacation" : "working";
+      profiles[selectedUserId] = profiles[selectedUserId] || { status: "working" };
+
+      if (next === "vacation") {
+        // Freeze streak at the moment vacation begins
+        const frozen = computeStreakBase(selectedUserId);
+        profiles[selectedUserId].status = "vacation";
+        profiles[selectedUserId].frozen_streak = frozen;
+        profiles[selectedUserId].frozen_at = todayKey;
+      } else {
+        // Resume
+        profiles[selectedUserId].status = "working";
+        delete profiles[selectedUserId].frozen_streak;
+        delete profiles[selectedUserId].frozen_at;
+      }
+
+      saveProfile(selectedUserId).catch(console.error);
+      updateView();
+    });
+
+    // Init
     dateEl.textContent = formatDatePretty(now);
-    renderUserTabs();
     updateView();
-    updateStatusAndTimeLeft();
     setInterval(updateStatusAndTimeLeft, 60 * 1000);
-    startFriendsListener();
+
+    startProfilesListener();
+    startEntriesListener();
   </script>
 </body>
 </html>
